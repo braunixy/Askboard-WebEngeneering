@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+
+    <meta charset="UTF-8"/>
+    <title>Web Engi Project</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+
+<div id="app">
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <ul class="nav navbar-nav">
+                <li><a href="#" v-on:click="allQuestions">All Questions</a></li>
+                <li><a href="#" v-on:click="openQuestions">Questions open</a></li>
+                <li><a href="#" v-on:click="unsolvedQuestions">Questions unsolved</a></li>
+                <li><a href="#" v-if="loggedIn" v-on:click="yourAnswer">Your Answers</a></li>
+                <li><a href="#" v-if="loggedIn" v-on:click="yourQuestions">Your Questions</a></li>
+            </ul>
+            <form class="navbar-form navbar-right">
+                <div class="form-group">
+                    <input type="text" class="form-control" v-model="user" v-if="!loggedIn" placeholder="Username"/>
+                    <input type="password" class="form-control" v-model="pwd" v-if="!loggedIn" placeholder="Password"/>
+                </div>
+                <button type="submit" class="btn btn-default" v-if="!loggedIn" v-on:click="loginFunction">Login</button>
+                <button type="submit" class="btn btn-default" v-if="!loggedIn" v-on:click="loginFunction">Create User</button>
+                <button type="submit" class="btn btn-default" v-if="loggedIn" v-on:click="loginFunction">Logout</button>
+
+            </form>
+        </div>
+    </nav>
+
+    <div id="Test1" v-if="showAllQuestions">
+        <button v-on:click="loginFunction">Click me</button>
+        <button v-on:click="getQuestions">Want some of these Questions</button>
+        <h1>{{user}}</h1>
+        <h1>{{pwd}}</h1>
+        <form v-if="loggedIn">
+            <input type="text" v-model="title" placeholder="Whats your Question"/>
+            <p/>
+            <textarea rows="4" cols="50" v-model="text" placeholder="Whats your Problem"/>
+            <p/>
+            <input type="button" v-on:click="newQuestions" value="Drück für den WHOOOP"/>
+        </form>
+
+
+
+
+        <ul id="example-1">
+            <li v-for="question in questions">
+                <h3>{{ question.title }} </h3>
+                <p>{{ question.text }} </p>
+            </li>
+        </ul>
+
+
+
+    </div>
+
+    <div id="Test2" v-if="showOpenQuestions">
+        <h1>Tada</h1>
+    </div>
+
+    <div id="UnsolvedQuestions" v-if="showUnsolvedQuestions">
+        <h1>SOLVE THIS</h1>
+    </div>
+
+    <div id="YourAnswer" v-if="showYourAnswers">
+        <h1>Your Answers are right here</h1>
+    </div>
+
+    <div id="YourQuestions" v-if="showYourQuestions">
+        <h1>Your Questions are here</h1>
+    </div>
+
+
+</div>
+
+</body>
+
+
+<script src="https://unpkg.com/vue"></script>
+<script>
+
+$(function(){
+    var app = new Vue({
+        el: "#app",
+        data: {
+       	    questions:[],
+       	    title:'',
+            text: '',
+            user:'',
+            pwd:'',
+            loggedIn:true,
+            showAllQuestions:true,
+            showOpenQuestions:false,
+            showUnsolvedQuestions:false,
+            showYourAnswers:false,
+            showYourQuestions:false,
+        },
+
+        methods:{
+	        newQuestions:function(){
+	         	$.ajax({
+		    	url:'http://localhost:8080/questions/new',
+		    	type:'POST',
+		    	contentType:'application/json',
+			    data:JSON.stringify({title:this.title,text:this.text}),
+			    success:function(){
+			    	app.getQuestions();
+			    	app.title = '';
+			    	app.text ='';
+			    }
+	    	    });
+	        },
+            getQuestions: function(){
+                $.getJSON('http://localhost:8080/questions/all', function(res){
+                            app.questions = res;
+                        });
+            },
+            loginFunction(){
+                if(app.loggedIn == true){
+                    app.loggedIn = false;
+                }else{
+                    app.loggedIn = true;
+                }
+            },
+            allQuestions(){
+                app.showAllQuestions = true;
+                app.showOpenQuestions = false;
+                app.showUnsolvedQuestions = false;
+                app.showYourAnswers = false;
+                app.showYourQuestions = false;
+            },
+            openQuestions(){
+                app.showAllQuestions = false;
+                app.showOpenQuestions = true;
+                app.showUnsolvedQuestions = false;
+                app.showYourAnswers = false;
+                app.showYourQuestions = false;
+            },
+            unsolvedQuestions(){
+                app.showAllQuestions = false;
+                app.showOpenQuestions = false;
+                app.showUnsolvedQuestions = true;
+                app.showYourAnswers = false;
+                app.showYourQuestions = false;
+            },
+            yourAnswer(){
+                app.showAllQuestions = false;
+                app.showOpenQuestions = false;
+                app.showUnsolvedQuestions = false;
+                app.showYourAnswers = true;
+                app.showYourQuestions = false;
+            },
+            yourQuestions(){
+                app.showAllQuestions = false;
+                app.showOpenQuestions = false;
+                app.showUnsolvedQuestions = false;
+                app.showYourAnswers = false;
+                app.showYourQuestions = true;
+            }
+
+        }
+    })
+    });
+
+</script>
+
+</html>
