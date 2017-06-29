@@ -1,7 +1,6 @@
 package server.askboard.group.myserveraskboard.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import server.askboard.group.myserveraskboard.entities.Answer;
 import server.askboard.group.myserveraskboard.entities.Question;
@@ -42,7 +41,6 @@ public class QuestionController {
     }
 
     @RequestMapping(value = "/new", method = RequestMethod.POST)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Question askQuestion(@RequestBody Question question) {
         questionService.insert(question);
         return question;
