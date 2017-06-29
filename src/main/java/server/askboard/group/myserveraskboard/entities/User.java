@@ -2,6 +2,7 @@ package server.askboard.group.myserveraskboard.entities;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class User {
@@ -14,17 +15,17 @@ public class User {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Role> roles;
 
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<Question> questions;
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Question> questions;
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Answer> answers;
+    private Set<Answer> answers;
 
     public User() {
 
     }
 
-    public User(String ussername, String password, List<Role> roles){
-        this.username = ussername;
+    public User(String username, String password, List<Role> roles){
+        this.username = username;
         this.password = password;
         this.roles = roles;
     }
@@ -61,19 +62,19 @@ public class User {
         this.password = password;
     }
 
-    public List<Question> getQuestions() {
+    public Set<Question> getQuestions() {
         return questions;
     }
 
-    public void setQuestions(List<Question> questions) {
+    public void setQuestions(Set<Question> questions) {
         this.questions = questions;
     }
 
-    public List<Answer> getAnswers() {
+    public Set<Answer> getAnswers() {
         return answers;
     }
 
-    public void setAnswers(List<Answer> answers) {
+    public void setAnswers(Set<Answer> answers) {
         this.answers = answers;
     }
 }

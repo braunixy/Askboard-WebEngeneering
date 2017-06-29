@@ -3,7 +3,6 @@ package server.askboard.group.myserveraskboard;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,11 +14,6 @@ public class MyServerAskboardApplication extends SpringBootServletInitializer {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(MyServerAskboardApplication.class);
-	}
 
 	public static void main(String[] args) throws Exception {
 		SpringApplication.run(MyServerAskboardApplication.class, args);

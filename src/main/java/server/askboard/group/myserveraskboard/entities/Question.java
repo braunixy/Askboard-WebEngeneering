@@ -2,7 +2,7 @@ package server.askboard.group.myserveraskboard.entities;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Question {
@@ -21,7 +21,7 @@ public class Question {
     private boolean withoutAnswers;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Answer> answers;
+    private Set<Answer> answers;
 
     public Question(){
 
@@ -92,11 +92,11 @@ public class Question {
         this.answered = answered;
     }
 
-    public List<Answer> getAnswers() {
+    public Set<Answer> getAnswers() {
         return answers;
     }
 
-    public void setAnswers(List<Answer> answers) {
+    public void setAnswers(Set<Answer> answers) {
         this.answers = answers;
     }
 }
