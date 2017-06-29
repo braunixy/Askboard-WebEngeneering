@@ -1,9 +1,6 @@
 package server.askboard.group.myserveraskboard.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -14,6 +11,8 @@ public class Answer {
     private Long id;
 
     private String owner;
+
+    @Column(name="text", length=1000)
     private String text;
     private Date creationDate;
     private boolean accepted;

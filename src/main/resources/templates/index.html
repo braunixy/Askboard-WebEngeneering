@@ -53,8 +53,9 @@
 
         <ul id="example-1">
             <li v-for="question in questions">
-                <h3>{{ question.title }} </h3>
-                <p>{{ question.text }} </p>
+                <h2>{{ question.title }} </h2>
+                <h4>{{ question.text }} </h4>
+                <p><i>{{ question.owner}}</i></p>
             </li>
         </ul>
 

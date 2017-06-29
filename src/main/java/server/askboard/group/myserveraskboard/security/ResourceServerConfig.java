@@ -16,7 +16,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/", "/questions/all/**", "/questions/view/**").permitAll()
-                .anyRequest().authenticated().antMatchers("/questions/new").authenticated()
+                .anyRequest().authenticated()
+                .antMatchers("/questions/new").authenticated()
                 .antMatchers("/questions/answer/**").authenticated()
                 .antMatchers("/questions/delete/**").authenticated();
     }

@@ -13,6 +13,8 @@ public class Question {
 
     private String owner;
     private String title;
+
+    @Column(name="text",length=1000)
     private String text;
     private Date creationDate;
     private boolean answered;
