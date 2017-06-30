@@ -31,7 +31,7 @@
                 <button type="button" class="btn btn-default" v-if="!loggedIn" v-on:click="loginFunction">Login</button>
                 <button type="submit" class="btn btn-default" v-if="!loggedIn" v-on:click="loginFunction">Create User
                 </button>
-                <button type="submit" class="btn btn-default" v-if="loggedIn" v-on:click="loginFunction">Logout</button>
+                <button type="submit" class="btn btn-default" v-if="loggedIn" v-on:click="logoutFunction">Logout</button>
 
             </form>
         </div>
@@ -151,6 +151,17 @@
                         }.bind(this)
 
 
+                    });
+                },
+
+                logoutFunction: function(){
+                    $.ajax({
+                        url: 'http://localhost:8080/logout',
+                        type: 'GET',
+                        success: function(){
+                            this.loggedIn = false;
+                            this.access_token = '';
+                        }
                     });
                 },
 
