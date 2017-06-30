@@ -65,17 +65,20 @@ public class QuestionService {
         UserCustomDetails details =
                 (UserCustomDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        answer.setOwner(details.getUsername());
         Question question = questionRepository.findOne(id);
         question.getAnswers().add(answer);
         question.setWithoutAnswers(false);
+
         if(answer.getCreationDate() == null){
             answer.setCreationDate(new Date());
         }
+        answer.setOwner(details.getUsername());
         answer.setParentId(question.getId());
         answer.setAccepted(false);
+
         questionRepository.save(question);
         userRepository.findByUsername(details.getUsername()).getAnswers().add(answer);
+
         return question;
     }
 }
