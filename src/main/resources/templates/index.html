@@ -29,7 +29,7 @@
                            placeholder="Password"/>
                 </div>
                 <button type="button" class="btn btn-default" v-if="!loggedIn" v-on:click="loginFunction">Login</button>
-                <button type="submit" class="btn btn-default" v-if="!loggedIn" v-on:click="loginFunction">Create User
+                <button type="button" class="btn btn-default" v-if="!loggedIn" v-on:click="registerFunction">Create User
                 </button>
                 <button type="submit" class="btn btn-default" v-if="loggedIn" v-on:click="logoutFunction">Logout</button>
 
@@ -163,6 +163,26 @@
                             this.access_token = '';
                         }
                     });
+                },
+
+                registerFunction: function () {
+                    $.ajax({
+                        url: 'http://localhost:8080/registration',
+                        type:'POST',
+                        contentType: 'application/JSON',
+                        data: JSON.stringify({
+                            "username": app.username,
+                            "password": app.password
+                        }),
+                        success:function () {
+                            alert('Your Registration was successful');
+                        },
+                        
+                        error:function (xhr) {
+                            alert(xhr);
+                        }
+
+                    })
                 },
 
                 allQuestions: function () {
