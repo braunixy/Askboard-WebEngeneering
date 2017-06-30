@@ -16,7 +16,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .anonymous()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/", "/login", "/questions/all/**", "/questions/all", "/questions/view/**")
+                .antMatchers("/", "/logout", "/questions/all/**", "/questions/all", "/questions/view/**")
                 .permitAll()
                 .anyRequest().authenticated()
                 .antMatchers("/questions/new").authenticated()
