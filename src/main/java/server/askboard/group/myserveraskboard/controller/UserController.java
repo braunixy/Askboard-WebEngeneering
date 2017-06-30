@@ -44,7 +44,7 @@ public class UserController {
             return "registration";
         }
 
-        userService.save(userForm);
+        userService.saveAsUser(userForm);
 
         return "redirect:/questions/all";
     }

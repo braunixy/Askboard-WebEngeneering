@@ -5,8 +5,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import server.askboard.group.myserveraskboard.entities.Role;
 import server.askboard.group.myserveraskboard.entities.User;
 import server.askboard.group.myserveraskboard.repositoties.UserRepository;
+
+import java.util.Arrays;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -28,5 +31,11 @@ public class UserServiceImpl implements UserService{
     @Override
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public void saveAsUser(User userForm) {
+        userForm.setRoles(Arrays.asList(new Role("ROLE_USER"), new Role("ROLE_CLIENT")));
+        save(userForm);
     }
 }
