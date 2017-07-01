@@ -46,6 +46,13 @@ public class QuestionService {
 
     public String delete(Long id) {
         Question deleteQuestion = questionRepository.findOne(id);
+        UserCustomDetails details =
+                (UserCustomDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if(!details.getUsername().equals(deleteQuestion.getOwner())){
+            return "Only allowed for own Questions!";
+        }
+
         for(Answer answer: deleteQuestion.getAnswers()){
             userRepository.findByUsername(deleteQuestion.getOwner()).getAnswers().remove(answer);
         }

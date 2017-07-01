@@ -40,7 +40,7 @@ public class UserController {
         userValidator.validate(userForm, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            return bindingResult.getAllErrors().toString();
+            return bindingResult.getAllErrors().get(0).toString();
         }
 
         userService.saveAsUser(userForm);

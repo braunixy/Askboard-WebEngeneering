@@ -174,11 +174,12 @@
                             "username": app.username,
                             "password": app.password
                         }),
-                        success:function () {
+                        success: function () {
                             alert('Your Registration was successful');
                         },
-                        error:function (xhr) {
-                            alert(xhr);
+                        error: function (xhr,status,error) {
+                            alert(xhr.status+xhr.message+xhr.responseText);
+                            alert(JSON.parse(xhr.responseText).message);
                         }
 
                     })

@@ -22,17 +22,17 @@ public class UserValidator implements Validator {
     public void validate(Object o, Errors errors) {
         User user = (User) o;
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "Not between 6 and 32");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "Empty");
         if (user.getUsername().length() < 6 || user.getUsername().length() > 32) {
-            errors.rejectValue("username", "Size.userForm.username");
+            errors.rejectValue("username", "Not between 6 and 32");
         }
         if (userService.findByUsername(user.getUsername()) != null) {
             errors.rejectValue("username", "Duplicate.userForm.username");
         }
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "Not between 8 and 32");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "Empty");
         if (user.getPassword().length() < 8 || user.getPassword().length() > 32) {
-            errors.rejectValue("password", "Size.userForm.password");
+            errors.rejectValue("password", "Not between 8 and 32");
         }
     }
 }
