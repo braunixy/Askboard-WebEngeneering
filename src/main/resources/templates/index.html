@@ -51,7 +51,7 @@
                 v-for="question in questions"
                 v-bind:question="question"
                 v-bind:key= "question.id"
-                v-bind:loggedIn="loggedIn"
+                v-bind:logged-in="loggedIn"
                 >
         </all-questions>
 
@@ -100,10 +100,13 @@
                             <h2>{{ question.title }} </h2>\
                             <h4 v-if="loggedIn">{{ question.text }} </h4>\
                             <p><i>{{ question.owner}}</i></p>\
-                            <p v-if="loggedIn">ZHallo!</p>\
+                            <p v-if="!loggedIn">ZHallo!</p>\
                         </ul>\
                     </span>\
-                    '
+                    ',
+                updated: function(){
+                    loggedIn=''
+                }
         }
 
 
