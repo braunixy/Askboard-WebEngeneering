@@ -38,26 +38,24 @@
     </nav>
 
     <div id="Test1" v-if="showAllQuestions">
-        <button v-on:click="loginFunction">Click me</button>
-        <button v-on:click="getQuestions">Want some of these Questions</button>
-        <h1>{{user}}</h1>
-        <h1>{{pwd}}</h1>
+        <h1><b><i>All questions</i></b></h1>
         <form v-if="loggedIn">
             <input type="text" v-model="title" placeholder="Whats your Question"/>
             <p/>
             <textarea rows="4" cols="50" v-model="text" placeholder="Whats your Problem"/>
             <p/>
-            <input type="button" v-on:click="newQuestions" value="Drück für den WHOOOP"/>
+            <input type="button" v-on:click="newQuestion" value="Ask your question"/>
         </form>
 
+        <all-questions
+                v-for="question in questions"
+                v-bind:question="question"
+                v-bind:key= "question.id"
+                v-bind:loggedIn="loggedIn"
+                >
+        </all-questions>
 
-        <ul id="example-1">
-            <li v-for="question in questions">
-                <h2>{{ question.title }} </h2>
-                <h4>{{ question.text }} </h4>
-                <p><i>{{ question.owner}}</i></p>
-            </li>
-        </ul>
+
 
 
     </div>
@@ -88,6 +86,27 @@
 <script>
 
     $(function () {
+
+        var Questions= {
+
+                props: {
+                    question:'',
+                    loggedIn:''
+                },
+
+                template: '\
+                    <span>\
+                        <ul>\
+                            <h2>{{ question.title }} </h2>\
+                            <h4 v-if="loggedIn">{{ question.text }} </h4>\
+                            <p><i>{{ question.owner}}</i></p>\
+                            <p v-if="loggedIn">ZHallo!</p>\
+                        </ul>\
+                    </span>\
+                    '
+        }
+
+
         var app = new Vue({
             el: "#app",
             data: {
@@ -105,8 +124,12 @@
                 showYourQuestions: false,
             },
 
+            components: {
+                'all-questions' : Questions
+            },
+
             methods: {
-                newQuestions: function () {
+                newQuestion: function () {
                     var $access_token = '?access_token=' + app.access_token;
                     $.ajax({
                         url: 'http://localhost:8080/questions/new'+[$access_token],
@@ -221,6 +244,10 @@
                     app.showYourQuestions = true;
                 }
 
+            },
+
+            created: function(){
+                this.getQuestions();
             }
         })
     });
