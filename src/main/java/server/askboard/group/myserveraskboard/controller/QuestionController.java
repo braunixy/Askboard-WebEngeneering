@@ -7,6 +7,7 @@ import server.askboard.group.myserveraskboard.entities.Question;
 import server.askboard.group.myserveraskboard.services.QuestionService;
 import server.askboard.group.myserveraskboard.services.UserService;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -39,8 +40,8 @@ public class QuestionController {
     }
 
     @RequestMapping(value = "/view/{id}", method = RequestMethod.GET)
-    public Question getQuestionByID(@PathVariable("id") Long id) {
-        return questionService.findByID(id);
+    public List<Question> getQuestionByID(@PathVariable("id") Long id) {
+        return Arrays.asList(questionService.findByID(id));
     }
 
     @RequestMapping(value = "/new", method = RequestMethod.POST)

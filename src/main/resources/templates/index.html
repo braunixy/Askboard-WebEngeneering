@@ -37,8 +37,28 @@
         </div>
     </nav>
 
-    <div id="Test1" v-if="showAllQuestions">
+    <div id="all" v-if="showAllQuestions">
         <h1><b><i>All questions</i></b></h1>
+        <all-questions
+                v-for="question in questions"
+                v-bind:question="question"
+                v-bind:key= "question.id"
+                v-bind:logged-in="loggedIn"
+                :current_question_id.sync="current_question_id"
+                v-on:request-question="showSingleQuestion"
+                >
+        </all-questions>
+    </div>
+
+    <div id="detail" v-if="showDetailsQuestion">
+
+    </div>
+
+    <div id="open" v-if="showOpenQuestions">
+
+    </div>
+
+    <div id="new" v-if="showAskingNewQuestion">
         <form v-if="loggedIn">
             <input type="text" v-model="title" placeholder="Whats your Question"/>
             <p/>
@@ -46,34 +66,18 @@
             <p/>
             <input type="button" v-on:click="newQuestion" value="Ask your question"/>
         </form>
+    </div>
 
-        <all-questions
-                v-for="question in questions"
-                v-bind:question="question"
-                v-bind:key= "question.id"
-                v-bind:logged-in="loggedIn"
-                >
-        </all-questions>
-
-
-
+    <div id="unsolved" v-if="showUnsolvedQuestions">
 
     </div>
 
-    <div id="Test2" v-if="showOpenQuestions">
-        <h1>Tada</h1>
+    <div id="answered" v-if="showYourAnswers">
+
     </div>
 
-    <div id="UnsolvedQuestions" v-if="showUnsolvedQuestions">
-        <h1>SOLVE THIS</h1>
-    </div>
+    <div id="own" v-if="showYourQuestions">
 
-    <div id="YourAnswer" v-if="showYourAnswers">
-        <h1>Your Answers are right here</h1>
-    </div>
-
-    <div id="YourQuestions" v-if="showYourQuestions">
-        <h1>Your Questions are here</h1>
     </div>
 
 
@@ -87,26 +91,38 @@
 
     $(function () {
 
-        var Questions= {
+        var AllQuestions= {
 
                 props: {
                     question:'',
                     loggedIn:''
                 },
-
                 template: '\
                     <span>\
-                        <ul>\
-                            <h2>{{ question.title }} </h2>\
-                            <h4 v-if="loggedIn">{{ question.text }} </h4>\
-                            <p><i>{{ question.owner}}</i></p>\
-                            <p v-if="!loggedIn">ZHallo!</p>\
+                        <ul style="border:10px solid lightgray; border-radius: 20px;">\
+                            <h2><a href="#" v-on:click="requestQuestion">{{ question.title }} </a></h2>\
+                            <h4>{{ question.text }} </h4>\
+                            <p><i>{{ question.owner}}</i>\
+                            <button v-if="loggedIn" style="float: right">X</button>\
+                            <button v-if="loggedIn" style="float: right">Answer</button>\
+                            </p>\
                         </ul>\
                     </span>\
                     ',
-                updated: function(){
-                    loggedIn=''
+                methods: {
+                    requestQuestion: function(){
+                        this.$emit('update:current_question_id', this.question.id)
+                        this.$emit('request-question')
+                    }
                 }
+        }
+
+        var DetailsQuestion= {
+            props: {
+                question: '',
+                loggedIn: ''
+            }
+
         }
 
 
@@ -114,12 +130,21 @@
             el: "#app",
             data: {
                 questions: [],
+
                 title: '',
                 text: '',
+
                 username: '',
                 password: '',
                 access_token: '',
+
+                current_question_id: 1,
+
+                loggedUsername: '',
                 loggedIn: false,
+
+                showDetailsQuestion: false,
+                showAskingNewQuestion: false,
                 showAllQuestions: true,
                 showOpenQuestions: false,
                 showUnsolvedQuestions: false,
@@ -128,7 +153,8 @@
             },
 
             components: {
-                'all-questions' : Questions
+                'all-questions' : AllQuestions,
+                'detail-question' : DetailsQuestion
             },
 
             methods: {
@@ -153,6 +179,12 @@
 
                 getQuestions: function () {
                     $.getJSON('http://localhost:8080/questions/all', function (res) {
+                        app.questions = res;
+                    });
+                },
+
+                requestQuestion: function() {
+                    $.getJSON('http://localhost:8080/questions/view/'+[app.current_question_id], function (res) {
                         app.questions = res;
                     });
                 },
@@ -211,40 +243,49 @@
                     })
                 },
 
-                allQuestions: function () {
-                    app.showAllQuestions = true;
+                showDetailsQuestion: function(){
+                    app.setAllShowFalse()
+                    app.showDetailsQuestion= true
+                },
+
+                showAskingNewQuestion: function(){
+                    app.setAllShowFalse()
+                    app.showAskingNewQuestion = true
+                },
+
+                showAllQuestions: function(){
+                    app.setAllShowFalse()
+                    app.showAllQuestions = true
+                },
+
+                showAllOpenQuestions: function(){
+                    app.setAllShowFalse()
+                    app.showOpenQuestions = true
+                },
+
+                showAllUnsolvedQuestions: function(){
+                    app.setAllShowFalse()
+                    app.showUnsolvedQuestions = true
+                },
+
+                showYourQuestions: function(){
+                    app.setAllShowFalse()
+                    app.showYourQuestions = true
+                },
+
+                showYourAnsweredQuestions: function(){
+                    app.setAllShowFalse()
+                    app.showYourAnswers = true
+                },
+
+                setAllShowFalse: function(){
+                    app.showDetailsQuestion = false;
+                    app.showAskingNewQuestion = false;
+                    app.showAllQuestions = false;
                     app.showOpenQuestions = false;
                     app.showUnsolvedQuestions = false;
                     app.showYourAnswers = false;
                     app.showYourQuestions = false;
-                },
-                openQuestions: function () {
-                    app.showAllQuestions = false;
-                    app.showOpenQuestions = true;
-                    app.showUnsolvedQuestions = false;
-                    app.showYourAnswers = false;
-                    app.showYourQuestions = false;
-                },
-                unsolvedQuestions: function () {
-                    app.showAllQuestions = false;
-                    app.showOpenQuestions = false;
-                    app.showUnsolvedQuestions = true;
-                    app.showYourAnswers = false;
-                    app.showYourQuestions = false;
-                },
-                yourAnswer: function () {
-                    app.showAllQuestions = false;
-                    app.showOpenQuestions = false;
-                    app.showUnsolvedQuestions = false;
-                    app.showYourAnswers = true;
-                    app.showYourQuestions = false;
-                },
-                yourQuestions: function () {
-                    app.showAllQuestions = false;
-                    app.showOpenQuestions = false;
-                    app.showUnsolvedQuestions = false;
-                    app.showYourAnswers = false;
-                    app.showYourQuestions = true;
                 }
 
             },
