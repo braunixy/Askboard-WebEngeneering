@@ -17,9 +17,9 @@
         <div class="container-fluid">
             <ul class="nav navbar-nav">
                 <li><a href="#" v-on:click="showAllQuestionsFunc">All Questions</a></li>
-                <li><a href="#" v-on:click="showAllOpenQuestionsFunc">Questions open</a></li>
-                <li><a href="#" v-on:click="showAllUnsolvedQuestionsFunc">Questions unsolved</a></li>
-                <li><a href="#" v-if="loggedIn" v-on:click="showYourAnsweredQuestionsFunc">Your Answers</a></li>
+                <li><a href="#" v-on:click="showAllUnsolvedQuestionsFunc">Questions Unsolved</a></li>
+                <li><a href="#" v-on:click="showAllUnansweredQuestionsFunc">Questions Unanswered</a></li>
+                <li><a href="#" v-if="loggedIn" v-on:click="showYourAnsweredQuestionsFunc">Your Answered Questions</a></li>
                 <li><a href="#" v-if="loggedIn" v-on:click="showYourQuestionsFunc">Your Questions</a></li>
                 <li><a href="#" v-if="loggedIn" v-on:click="showAskingNewQuestionFunc">Ask a Question</a></li>
             </ul>
@@ -39,8 +39,8 @@
     </nav>
 
     <div id="all" v-if="showAllQuestions">
-        <h1><b><i>All questions</i></b></h1>
-        <all-questions
+        <h1><b><i>All Questions</i></b></h1>
+        <questions
                 v-on:answer-question="answerQuestion"
                 v-on:request-question="showDetailsQuestionFunc"
                 v-for="question in questions"
@@ -50,7 +50,7 @@
                 :current_question_id.sync="current_question_id"
                 :text.sync="text"
                 >
-        </all-questions>
+        </questions>
     </div>
 
     <div id="detail" v-if="showDetailsQuestion">
@@ -66,11 +66,23 @@
         </details-question>
     </div>
 
-    <div id="open" v-if="showOpenQuestions">
-
+    <div id="open" v-if="showUnsolvedQuestions">
+        <h1><b><i>Unsolved Questions</i></b></h1>
+        <questions
+                v-on:answer-question="answerQuestion"
+                v-on:request-question="showDetailsQuestionFunc"
+                v-for="question in questions"
+                v-bind:question="question"
+                v-bind:key= "question.id"
+                v-bind:logged-in="loggedIn"
+                :current_question_id.sync="current_question_id"
+                :text.sync="text"
+        >
+        </questions>
     </div>
 
     <div id="new" v-if="showAskingNewQuestion">
+        <h1><b><i>New Question</i></b></h1>
         <form v-if="loggedIn">
             <input type="text" v-model="title" placeholder="Whats your Question"/>
             <p/>
@@ -80,8 +92,19 @@
         </form>
     </div>
 
-    <div id="unsolved" v-if="showUnsolvedQuestions">
-
+    <div id="unsolved" v-if="showAllUnansweredQuestions">
+        <h1><b><i>Unanswered Questions</i></b></h1>
+        <questions
+                v-on:answer-question="answerQuestion"
+                v-on:request-question="showDetailsQuestionFunc"
+                v-for="question in questions"
+                v-bind:question="question"
+                v-bind:key= "question.id"
+                v-bind:logged-in="loggedIn"
+                :current_question_id.sync="current_question_id"
+                :text.sync="text"
+        >
+        </questions>
     </div>
 
     <div id="answered" v-if="showYourAnswers">
@@ -89,7 +112,17 @@
     </div>
 
     <div id="own" v-if="showYourQuestions">
-
+        <questions
+                v-on:answer-question="answerQuestion"
+                v-on:request-question="showDetailsQuestionFunc"
+                v-for="question in calcOwn"
+                v-bind:question="question"
+                v-bind:key= "question.id"
+                v-bind:logged-in="loggedIn"
+                :current_question_id.sync="current_question_id"
+                :text.sync="text"
+        >
+        </questions>
     </div>
 
 
@@ -103,8 +136,7 @@
 
     $(function () {
 
-        var AllQuestions= {
-
+        var Questions= {
                 props: {
                     question:'',
                     loggedIn:'',
@@ -195,6 +227,7 @@
             el: "#app",
             data: {
                 questions: [],
+                ownQuestions: [],
                 question: '',
 
                 title: '',
@@ -212,21 +245,15 @@
                 showDetailsQuestion: false,
                 showAskingNewQuestion: false,
                 showAllQuestions: true,
-                showOpenQuestions: false,
                 showUnsolvedQuestions: false,
+                showAllUnansweredQuestions: false,
                 showYourAnswers: false,
-                showYourQuestions: false,
+                showYourQuestions: false
             },
-
             components: {
-                'all-questions' : AllQuestions,
+                'questions' : Questions,
                 'details-question' : DetailsQuestion
             },
-
-            computed: {
-
-            },
-
             methods: {
                 newQuestion: function () {
                     var $access_token = '?access_token=' + app.access_token;
@@ -238,7 +265,6 @@
                             "title": app.title,
                             "text": app.text
                         }),
-
                         success: function () {
                             app.title = '';
                             app.text = '';
@@ -246,7 +272,6 @@
                         }
                     });
                 },
-
                 answerQuestion: function(){
                     var $access_token = '?access_token=' + app.access_token;
                     $.ajax({
@@ -256,26 +281,32 @@
                         data: JSON.stringify({
                             "text": app.text
                         }),
-
                         success: function () {
                             app.text = '';
                             app.showDetailsQuestionFunc()
                         }
                     })
                 },
-
                 getQuestions: function () {
                     $.getJSON('http://localhost:8080/questions/all', function (res) {
                         app.questions = res;
                     });
                 },
-
+                getUnsolvedQuestions: function () {
+                    $.getJSON('http://localhost:8080/questions/all/unanswered', function (res) {
+                        app.questions = res;
+                    });
+                },
+                getUnansweredeQuestions: function () {
+                    $.getJSON('http://localhost:8080/questions/all/noanswer', function (res) {
+                        app.questions = res;
+                    });
+                },
                 requestQuestion: function() {
                     $.getJSON('http://localhost:8080/questions/view/'+[app.current_question_id], function (res) {
                         app.question = res
                     });
                 },
-
                 loginFunction: function () {
                     $.ajax({
                         url: 'http://localhost:8080/oauth/token',
@@ -292,28 +323,33 @@
                         contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
                         success: function (data) {
                             this.loggedIn = true;
+                            this.loggedUsername = this.username;
                             this.access_token = data.access_token;
-                        }.bind(this)
-
-
+                            this.username = '';
+                            this.password = '';
+                            this.$forceUpdate();
+                        }.bind(this),
+                        error: function(xhr){
+                            if(xhr.status == '401'){
+                                alert('Invalid Username-Password Combination')
+                            }
+                        }
                     });
                 },
-
                 logoutFunction: function(){
                     $.ajax({
                         url: 'http://localhost:8080/logout',
                         type: 'GET',
-                        headers: {
-                            "Authorization": "Basic " + btoa('my-trusted-client' + ':' + '')
+                        contentType: 'application/JSON',
+                        data: {
+                          justData: ''
                         },
-                        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
                         success: function(){
                             this.loggedIn = false;
                             this.access_token = '';
                         }.bind(this)
                     });
                 },
-
                 registerFunction: function () {
                     $.ajax({
                         url: 'http://localhost:8080/registration',
@@ -325,71 +361,77 @@
                         }),
                         success: function () {
                             alert('Your Registration was successful');
+                            app.username = '';
+                            app.password = '';
                         },
-                        error: function (xhr,status,error) {
-                            alert(xhr.status+xhr.message+xhr.responseText);
+                        error: function (xhr) {
+                            alert(xhr.status+" | "+xhr.response+" | "+xhr.response+" | "+xhr.responseText);
                             alert(JSON.parse(xhr.responseText).message);
                         }
 
                     })
                 },
-
                 showDetailsQuestionFunc: function(){
                     app.requestQuestion()
                     app.setAllShowFalse()
                     app.showDetailsQuestion= true
 
                 },
-
                 showAskingNewQuestionFunc: function(){
                     app.setAllShowFalse()
                     app.showAskingNewQuestion = true
                 },
-
                 showAllQuestionsFunc: function(){
                     app.getQuestions()
                     app.setAllShowFalse()
                     app.showAllQuestions = true
                 },
-
-                showAllOpenQuestionsFunc: function(){
-                    app.setAllShowFalse()
-                    app.showOpenQuestions = true
-                },
-
                 showAllUnsolvedQuestionsFunc: function(){
+                    app.getUnsolvedQuestions()
                     app.setAllShowFalse()
                     app.showUnsolvedQuestions = true
                 },
-
+                showAllUnansweredQuestionsFunc: function(){
+                    app.getUnansweredeQuestions()
+                    app.setAllShowFalse()
+                    app.showAllUnansweredQuestions = true
+                },
                 showYourQuestionsFunc: function(){
                     app.setAllShowFalse()
                     app.showYourQuestions = true
                 },
-
                 showYourAnsweredQuestionsFunc: function(){
                     app.setAllShowFalse()
                     app.showYourAnswers = true
                 },
-
                 setAllShowFalse: function(){
                     app.showDetailsQuestion = false;
                     app.showAskingNewQuestion = false;
                     app.showAllQuestions = false;
-                    app.showOpenQuestions = false;
                     app.showUnsolvedQuestions = false;
+                    app.showAllUnansweredQuestions = false;
                     app.showYourAnswers = false;
                     app.showYourQuestions = false;
                 }
-
             },
-
+            computed: {
+                calcOwn: function(){
+                    this.getQuestions()
+                    this.ownQuestions;
+                    this.loggedUsername;
+                    for(var question in this.questions){
+                        alert(question.owner + this.loggedUsername)
+                        if(question.owner === this.loggedUsername){
+                            this.ownQuestions.add(question)
+                        }
+                    }
+                    return this.ownQuestions
+                }
+            },
             created: function(){
                 this.getQuestions();
             }
         })
     });
-
 </script>
-
 </html>

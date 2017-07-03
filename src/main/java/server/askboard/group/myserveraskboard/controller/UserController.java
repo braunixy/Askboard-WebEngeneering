@@ -50,13 +50,11 @@ public class UserController {
 
     @RequestMapping(value = {"/logout", "/login"}, method = RequestMethod.GET)
     public String logout(HttpServletRequest request, HttpServletResponse response) {
-        System.out.println("dsafsdfsdfgdfhgdsa");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null){
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
-
-        return "logout";
+        return "";
     }
 
     @RequestMapping(value = {"/p", "/welcome"}, method = RequestMethod.GET)
