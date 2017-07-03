@@ -48,9 +48,9 @@ public class UserController {
         return "redirect:/questions/all";
     }
 
-    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    @RequestMapping(value = {"/logout", "/login"}, method = RequestMethod.GET)
     public String logout(HttpServletRequest request, HttpServletResponse response) {
-
+        System.out.println("dsafsdfsdfgdfhgdsa");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null){
             new SecurityContextLogoutHandler().logout(request, response, auth);

@@ -16,11 +16,12 @@
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
             <ul class="nav navbar-nav">
-                <li><a href="#" v-on:click="allQuestions">All Questions</a></li>
-                <li><a href="#" v-on:click="openQuestions">Questions open</a></li>
-                <li><a href="#" v-on:click="unsolvedQuestions">Questions unsolved</a></li>
-                <li><a href="#" v-if="loggedIn" v-on:click="yourAnswer">Your Answers</a></li>
-                <li><a href="#" v-if="loggedIn" v-on:click="yourQuestions">Your Questions</a></li>
+                <li><a href="#" v-on:click="showAllQuestionsFunc">All Questions</a></li>
+                <li><a href="#" v-on:click="showAllOpenQuestionsFunc">Questions open</a></li>
+                <li><a href="#" v-on:click="showAllUnsolvedQuestionsFunc">Questions unsolved</a></li>
+                <li><a href="#" v-if="loggedIn" v-on:click="showYourAnsweredQuestionsFunc">Your Answers</a></li>
+                <li><a href="#" v-if="loggedIn" v-on:click="showYourQuestionsFunc">Your Questions</a></li>
+                <li><a href="#" v-if="loggedIn" v-on:click="showAskingNewQuestionFunc">Ask a Question</a></li>
             </ul>
             <form class="navbar-form navbar-right">
                 <div class="form-group">
@@ -31,7 +32,7 @@
                 <button type="button" class="btn btn-default" v-if="!loggedIn" v-on:click="loginFunction">Login</button>
                 <button type="button" class="btn btn-default" v-if="!loggedIn" v-on:click="registerFunction">Create User
                 </button>
-                <button type="submit" class="btn btn-default" v-if="loggedIn" v-on:click="logoutFunction">Logout</button>
+                <button type="button" class="btn btn-default" v-if="loggedIn" v-on:click="logoutFunction">Logout</button>
 
             </form>
         </div>
@@ -45,13 +46,23 @@
                 v-bind:key= "question.id"
                 v-bind:logged-in="loggedIn"
                 :current_question_id.sync="current_question_id"
-                v-on:request-question="showSingleQuestion"
+                :text.sync="text"
+                v-on:request-question="showDetailsQuestionFunc"
+                v-on:answer-question="answerQuestion"
                 >
         </all-questions>
     </div>
 
     <div id="detail" v-if="showDetailsQuestion">
-
+        <details-question
+                v-bind:question="question"
+                v-bind:key= "question.id"
+                v-bind:logged-in="loggedIn"
+                :current_question_id.sync="current_question_id"
+                :text.sync="text"
+                v-on:answer-question="answerQuestion"
+                >
+        </details-question>
     </div>
 
     <div id="open" v-if="showOpenQuestions">
@@ -95,7 +106,9 @@
 
                 props: {
                     question:'',
-                    loggedIn:''
+                    loggedIn:'',
+                    text: '',
+                    answeringQuestion: false
                 },
                 template: '\
                     <span>\
@@ -104,8 +117,10 @@
                             <h4>{{ question.text }} </h4>\
                             <p><i>{{ question.owner}}</i>\
                             <button v-if="loggedIn" style="float: right">X</button>\
-                            <button v-if="loggedIn" style="float: right">Answer</button>\
+                            <button v-if="loggedIn" style="float: right" v-on:click="answerQuestion">Answer</button>\
                             </p>\
+                            <textarea rows="4" cols="50" v-model="text" v-if="answeringQuestion" placeholder="Whats your Problem"/>\
+                            <input type="button" v-if="answeringQuestion" v-on:click="submitAnswer" value="Submit"/>\
                         </ul>\
                     </span>\
                     ',
@@ -113,6 +128,15 @@
                     requestQuestion: function(){
                         this.$emit('update:current_question_id', this.question.id)
                         this.$emit('request-question')
+                    },
+                    answerQuestion: function(){
+                        this.$emit('update:current_question_id', this.question.id)
+                        this.answeringQuestion = true
+                    },
+                    submitAnswer: function() {
+                        this.answeringQuestion = false
+                        this.$emit('update:text', this.text)
+                        this.$emit('answer-question')
                     }
                 }
         }
@@ -120,9 +144,40 @@
         var DetailsQuestion= {
             props: {
                 question: '',
-                loggedIn: ''
+                loggedIn: '',
+                text: '',
+                answeringQuestion: false
+            },
+            template: '\
+                <span>\
+                    <ul style="border:10px solid lightgray; border-radius: 10px;">\
+                        <h2  style="border-bottom:1px solid black;">{{question.title}}</h2>\
+                        <h3>{{question.text}}</h3>\
+                        <p><i>{{ question.owner}}</i>\
+                            <button v-if="loggedIn" style="float: right">X</button>\
+                            <button v-if="loggedIn" style="float: right" v-on:click="answerQuestion">Answer</button>\
+                        </p>\
+                        <textarea rows="4" cols="50" v-model="text" v-if="answeringQuestion" placeholder="Whats your Problem"/>\
+                        <input type="button" v-if="answeringQuestion" v-on:click="submitAnswer" value="Submit"/>\
+                        <li v-for="answer in question.answers">\
+                            <p>{{answer.text}}</p>\
+                            <p><i>{{answer.owner}}</i></p>\
+                        </li>\
+                    </ul>\
+                </span>\
+            ',
+            methods:{
+                answerQuestion: function(){
+                    this.$emit('update:current_question_id', this.question.id)
+                    this.answeringQuestion = true
+                },
+                submitAnswer: function() {
+                    this.answeringQuestion = false
+                    this.$emit('update:text', this.text)
+                    this.$emit('answer-question')
+                    app.requestQuestion()
+                }
             }
-
         }
 
 
@@ -130,6 +185,7 @@
             el: "#app",
             data: {
                 questions: [],
+                question: '',
 
                 title: '',
                 text: '',
@@ -154,7 +210,11 @@
 
             components: {
                 'all-questions' : AllQuestions,
-                'detail-question' : DetailsQuestion
+                'details-question' : DetailsQuestion
+            },
+
+            computed: {
+
             },
 
             methods: {
@@ -170,11 +230,27 @@
                         }),
 
                         success: function () {
-                            app.getQuestions();
                             app.title = '';
                             app.text = '';
+                            app.showAllQuestionsFunc()
                         }
                     });
+                },
+
+                answerQuestion: function(){
+                    var $access_token = '?access_token=' + app.access_token;
+                    $.ajax({
+                        url: 'http://localhost:8080/questions/answer/'+[app.current_question_id]+[$access_token],
+                        type: 'POST',
+                        contentType: 'application/JSON',
+                        data: JSON.stringify({
+                            "text": app.text
+                        }),
+
+                        success: function () {
+                            app.text = '';
+                        }
+                    })
                 },
 
                 getQuestions: function () {
@@ -185,7 +261,7 @@
 
                 requestQuestion: function() {
                     $.getJSON('http://localhost:8080/questions/view/'+[app.current_question_id], function (res) {
-                        app.questions = res;
+                        app.question = res;
                     });
                 },
 
@@ -219,7 +295,7 @@
                         success: function(){
                             this.loggedIn = false;
                             this.access_token = '';
-                        }
+                        }.bind(this)
                     });
                 },
 
@@ -243,37 +319,39 @@
                     })
                 },
 
-                showDetailsQuestion: function(){
+                showDetailsQuestionFunc: function(){
                     app.setAllShowFalse()
                     app.showDetailsQuestion= true
+                    app.requestQuestion()
                 },
 
-                showAskingNewQuestion: function(){
+                showAskingNewQuestionFunc: function(){
                     app.setAllShowFalse()
                     app.showAskingNewQuestion = true
                 },
 
-                showAllQuestions: function(){
+                showAllQuestionsFunc: function(){
                     app.setAllShowFalse()
                     app.showAllQuestions = true
+                    app.getQuestions()
                 },
 
-                showAllOpenQuestions: function(){
+                showAllOpenQuestionsFunc: function(){
                     app.setAllShowFalse()
                     app.showOpenQuestions = true
                 },
 
-                showAllUnsolvedQuestions: function(){
+                showAllUnsolvedQuestionsFunc: function(){
                     app.setAllShowFalse()
                     app.showUnsolvedQuestions = true
                 },
 
-                showYourQuestions: function(){
+                showYourQuestionsFunc: function(){
                     app.setAllShowFalse()
                     app.showYourQuestions = true
                 },
 
-                showYourAnsweredQuestions: function(){
+                showYourAnsweredQuestionsFunc: function(){
                     app.setAllShowFalse()
                     app.showYourAnswers = true
                 },

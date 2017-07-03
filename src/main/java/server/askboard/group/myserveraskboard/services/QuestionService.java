@@ -60,6 +60,10 @@ public class QuestionService {
         return "Question deleted!";
     }
 
+    public void save(Question question) {
+        questionRepository.save(question);
+    }
+
     public List<Question> findByWithoutAnswers() {
         return questionRepository.findByWithoutAnswersTrue();
     }
