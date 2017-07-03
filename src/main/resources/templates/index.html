@@ -41,26 +41,27 @@
     <div id="all" v-if="showAllQuestions">
         <h1><b><i>All questions</i></b></h1>
         <all-questions
+                v-on:answer-question="answerQuestion"
+                v-on:request-question="showDetailsQuestionFunc"
                 v-for="question in questions"
                 v-bind:question="question"
                 v-bind:key= "question.id"
                 v-bind:logged-in="loggedIn"
                 :current_question_id.sync="current_question_id"
                 :text.sync="text"
-                v-on:request-question="showDetailsQuestionFunc"
-                v-on:answer-question="answerQuestion"
                 >
         </all-questions>
     </div>
 
     <div id="detail" v-if="showDetailsQuestion">
         <details-question
+                v-on:answer-question="answerQuestion"
+                v-on:request-question="showDetailsQuestionFunc"
                 v-bind:question="question"
                 v-bind:key= "question.id"
                 v-bind:logged-in="loggedIn"
                 :current_question_id.sync="current_question_id"
                 :text.sync="text"
-                v-on:answer-question="answerQuestion"
                 >
         </details-question>
     </div>
@@ -119,8 +120,9 @@
                             <button v-if="loggedIn" style="float: right">X</button>\
                             <button v-if="loggedIn" style="float: right" v-on:click="answerQuestion">Answer</button>\
                             </p>\
-                            <textarea rows="4" cols="50" v-model="text" v-if="answeringQuestion" placeholder="Whats your Problem"/>\
+                            <textarea rows="4" cols="50" v-model="text" v-if="answeringQuestion" placeholder="Your Answer"/>\
                             <input type="button" v-if="answeringQuestion" v-on:click="submitAnswer" value="Submit"/>\
+                            <input type="button" v-if="answeringQuestion" v-on:click="cancelAnswer" value="Cancel"/>\
                         </ul>\
                     </span>\
                     ',
@@ -137,6 +139,10 @@
                         this.answeringQuestion = false
                         this.$emit('update:text', this.text)
                         this.$emit('answer-question')
+                    },
+                    cancelAnswer: function(){
+                        this.answeringQuestion = false
+                        this.text = ''
                     }
                 }
         }
@@ -157,8 +163,9 @@
                             <button v-if="loggedIn" style="float: right">X</button>\
                             <button v-if="loggedIn" style="float: right" v-on:click="answerQuestion">Answer</button>\
                         </p>\
-                        <textarea rows="4" cols="50" v-model="text" v-if="answeringQuestion" placeholder="Whats your Problem"/>\
+                        <textarea rows="4" cols="50" v-model="text" v-if="answeringQuestion" placeholder="Your Answer"/>\
                         <input type="button" v-if="answeringQuestion" v-on:click="submitAnswer" value="Submit"/>\
+                        <input type="button" v-if="answeringQuestion" v-on:click="cancelAnswer" value="Cancel"/>\
                         <li v-for="answer in question.answers">\
                             <p>{{answer.text}}</p>\
                             <p><i>{{answer.owner}}</i></p>\
@@ -175,7 +182,10 @@
                     this.answeringQuestion = false
                     this.$emit('update:text', this.text)
                     this.$emit('answer-question')
-                    app.requestQuestion()
+                },
+                cancelAnswer: function(){
+                    this.answeringQuestion = false
+                    this.text = ''
                 }
             }
         }
@@ -249,6 +259,7 @@
 
                         success: function () {
                             app.text = '';
+                            app.showDetailsQuestionFunc()
                         }
                     })
                 },
@@ -261,7 +272,7 @@
 
                 requestQuestion: function() {
                     $.getJSON('http://localhost:8080/questions/view/'+[app.current_question_id], function (res) {
-                        app.question = res;
+                        app.question = res
                     });
                 },
 
@@ -292,6 +303,10 @@
                     $.ajax({
                         url: 'http://localhost:8080/logout',
                         type: 'GET',
+                        headers: {
+                            "Authorization": "Basic " + btoa('my-trusted-client' + ':' + '')
+                        },
+                        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
                         success: function(){
                             this.loggedIn = false;
                             this.access_token = '';
@@ -320,9 +335,10 @@
                 },
 
                 showDetailsQuestionFunc: function(){
+                    app.requestQuestion()
                     app.setAllShowFalse()
                     app.showDetailsQuestion= true
-                    app.requestQuestion()
+
                 },
 
                 showAskingNewQuestionFunc: function(){
@@ -331,9 +347,9 @@
                 },
 
                 showAllQuestionsFunc: function(){
+                    app.getQuestions()
                     app.setAllShowFalse()
                     app.showAllQuestions = true
-                    app.getQuestions()
                 },
 
                 showAllOpenQuestionsFunc: function(){
