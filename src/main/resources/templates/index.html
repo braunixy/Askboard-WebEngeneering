@@ -51,6 +51,7 @@
                 :text.sync="text"
                 >
         </questions>
+
     </div>
 
     <div id="detail" v-if="showDetailsQuestion">
@@ -112,6 +113,7 @@
     </div>
 
     <div id="own" v-if="showYourQuestions">
+        <h1><b><i>Your Questions</i></b></h1>
         <questions
                 v-on:answer-question="answerQuestion"
                 v-on:request-question="showDetailsQuestionFunc"
@@ -227,14 +229,15 @@
             el: "#app",
             data: {
                 questions: [],
+                triggerQuestions: [],
                 ownQuestions: [],
                 question: '',
 
                 title: '',
                 text: '',
 
-                username: '',
-                password: '',
+                username: 'Olaf123',
+                password: 'olaf123',
                 access_token: '',
 
                 current_question_id: 1,
@@ -269,6 +272,7 @@
                             app.title = '';
                             app.text = '';
                             app.showAllQuestionsFunc()
+                            app.recalculateOwnQuestions()
                         }
                     });
                 },
@@ -412,17 +416,22 @@
                     app.showAllUnansweredQuestions = false;
                     app.showYourAnswers = false;
                     app.showYourQuestions = false;
+                },
+                recalculateOwnQuestions: function(){
+                    $.getJSON('http://localhost:8080/questions/all', function (res) {
+                        app.triggerQuestions = res;
+                    });
                 }
             },
             computed: {
                 calcOwn: function(){
-                    this.getQuestions()
                     this.ownQuestions;
                     this.loggedUsername;
-                    for(var question in this.questions){
-                        alert(question.owner + this.loggedUsername)
-                        if(question.owner === this.loggedUsername){
-                            this.ownQuestions.add(question)
+                    var counter = 0
+                    for(var question in this.triggerQuestions){
+                        if(this.triggerQuestions[question].owner == this.loggedUsername){
+                            this.ownQuestions[counter] = this.triggerQuestions[question]
+                            counter++;
                         }
                     }
                     return this.ownQuestions
@@ -430,6 +439,7 @@
             },
             created: function(){
                 this.getQuestions();
+                this.recalculateOwnQuestions()
             }
         })
     });
