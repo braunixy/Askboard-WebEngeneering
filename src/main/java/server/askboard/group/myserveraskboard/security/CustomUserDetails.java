@@ -13,13 +13,13 @@ import java.util.List;
 /**
  * Created by Brauni on 28.06.2017.
  */
-public class UserCustomDetails implements UserDetails {
+public class CustomUserDetails implements UserDetails {
 
     private String username;
     private String password;
     Collection<? extends GrantedAuthority> authorities;
 
-    public UserCustomDetails(User byUsername) {
+    public CustomUserDetails(User byUsername) {
         this.username = byUsername.getUsername();
         this.password  = byUsername.getPassword();
 

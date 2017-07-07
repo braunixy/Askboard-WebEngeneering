@@ -5,6 +5,9 @@
     <meta charset="UTF-8"/>
     <title>Web Engi Project</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="_csrf" content="${_csrf.token}"/>
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -39,14 +42,16 @@
     </nav>
 
     <div id="all" v-if="showAllQuestions">
-        <h1><b><i>All Questions</i></b></h1>
+        <h1 style="text-align:center;"><b><i>All Questions</i></b></h1>
         <questions
                 v-on:answer-question="answerQuestion"
                 v-on:request-question="showDetailsQuestionFunc"
+                v-on:delete-question="deleteQuestion"
                 v-for="question in questions"
                 v-bind:question="question"
                 v-bind:key= "question.id"
                 v-bind:logged-in="loggedIn"
+                v-bind:user="loggedUsername"
                 :current_question_id.sync="current_question_id"
                 :text.sync="text"
                 >
@@ -58,9 +63,11 @@
         <details-question
                 v-on:answer-question="answerQuestion"
                 v-on:request-question="showDetailsQuestionFunc"
+                v-on:delete-question="deleteQuestion"
                 v-bind:question="question"
                 v-bind:key= "question.id"
                 v-bind:logged-in="loggedIn"
+                v-bind:user="loggedUsername"
                 :current_question_id.sync="current_question_id"
                 :text.sync="text"
                 >
@@ -68,14 +75,16 @@
     </div>
 
     <div id="open" v-if="showUnsolvedQuestions">
-        <h1><b><i>Unsolved Questions</i></b></h1>
+        <h1 style="text-align:center;"><b><i>Unsolved Questions</i></b></h1>
         <questions
                 v-on:answer-question="answerQuestion"
                 v-on:request-question="showDetailsQuestionFunc"
+                v-on:delete-question="deleteQuestion"
                 v-for="question in questions"
                 v-bind:question="question"
                 v-bind:key= "question.id"
                 v-bind:logged-in="loggedIn"
+                v-bind:user="loggedUsername"
                 :current_question_id.sync="current_question_id"
                 :text.sync="text"
         >
@@ -83,25 +92,27 @@
     </div>
 
     <div id="new" v-if="showAskingNewQuestion">
-        <h1><b><i>New Question</i></b></h1>
-        <form v-if="loggedIn">
+        <h1 style="text-align:center;"><b><i>New Question</i></b></h1>
+        <form style="text-align:center;">
             <input type="text" v-model="title" placeholder="Whats your Question"/>
             <p/>
-            <textarea rows="4" cols="50" v-model="text" placeholder="Whats your Problem"/>
+            <textarea rows="10" cols="150" v-model="text" placeholder="Whats your Problem"/>
             <p/>
             <input type="button" v-on:click="newQuestion" value="Ask your question"/>
         </form>
     </div>
 
     <div id="unsolved" v-if="showAllUnansweredQuestions">
-        <h1><b><i>Unanswered Questions</i></b></h1>
+        <h1 style="text-align:center;"><b><i>Unanswered Questions</i></b></h1>
         <questions
                 v-on:answer-question="answerQuestion"
                 v-on:request-question="showDetailsQuestionFunc"
+                v-on:delete-question="deleteQuestion"
                 v-for="question in questions"
                 v-bind:question="question"
                 v-bind:key= "question.id"
                 v-bind:logged-in="loggedIn"
+                v-bind:user="loggedUsername"
                 :current_question_id.sync="current_question_id"
                 :text.sync="text"
         >
@@ -109,18 +120,33 @@
     </div>
 
     <div id="answered" v-if="showYourAnswers">
-
-    </div>
-
-    <div id="own" v-if="showYourQuestions">
-        <h1><b><i>Your Questions</i></b></h1>
+        <h1 style="text-align:center;"><b><i>Your Answered Questions</i></b></h1>
         <questions
                 v-on:answer-question="answerQuestion"
                 v-on:request-question="showDetailsQuestionFunc"
+                v-on:delete-question="deleteQuestion"
+                v-for="question in questions"
+                v-bind:question="question"
+                v-bind:key= "question.id"
+                v-bind:logged-in="loggedIn"
+                v-bind:user="loggedUsername"
+                :current_question_id.sync="current_question_id"
+                :text.sync="text"
+        >
+        </questions>
+    </div>
+
+    <div id="own" v-if="showYourQuestions">
+        <h1 style="text-align:center;"><b><i>Your Questions</i></b></h1>
+        <questions
+                v-on:answer-question="answerQuestion"
+                v-on:request-question="showDetailsQuestionFunc"
+                v-on:delete-question="deleteQuestion"
                 v-for="question in calcOwn"
                 v-bind:question="question"
                 v-bind:key= "question.id"
                 v-bind:logged-in="loggedIn"
+                v-bind:user="loggedUsername"
                 :current_question_id.sync="current_question_id"
                 :text.sync="text"
         >
@@ -137,11 +163,24 @@
 <script>
 
     $(function () {
+        var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
+
+        $(document).ajaxSend(function(e, xhr, options) {
+            if ( options.url == 'http://localhost:8080/questions/nessssw' ) {
+                xhr.setRequestHeader('X-CSRF-Token', token);
+                alert('hallo')
+            }
+        });
+    })
+
+    $(function () {
 
         var Questions= {
                 props: {
                     question:'',
                     loggedIn:'',
+                    user:'',
                     text: '',
                     answeringQuestion: false
                 },
@@ -151,7 +190,7 @@
                             <h2><a href="#" v-on:click="requestQuestion">{{ question.title }} </a></h2>\
                             <h4>{{ question.text }} </h4>\
                             <p><i>{{ question.owner}}</i>\
-                            <button v-if="loggedIn" style="float: right">X</button>\
+                            <button v-if="question.owner == user" style="float: right" v-on:click="deleteQuestion">Delete</button>\
                             <button v-if="loggedIn" style="float: right" v-on:click="answerQuestion">Answer</button>\
                             </p>\
                             <textarea rows="4" cols="50" v-model="text" v-if="answeringQuestion" placeholder="Your Answer"/>\
@@ -177,6 +216,10 @@
                     cancelAnswer: function(){
                         this.answeringQuestion = false
                         this.text = ''
+                    },
+                    deleteQuestion: function() {
+                        this.$emit('update:current_question_id', this.question.id)
+                        this.$emit('delete-question')
                     }
                 }
         }
@@ -185,6 +228,7 @@
             props: {
                 question: '',
                 loggedIn: '',
+                user:'',
                 text: '',
                 answeringQuestion: false
             },
@@ -194,7 +238,7 @@
                         <h2  style="border-bottom:1px solid black;">{{question.title}}</h2>\
                         <h3>{{question.text}}</h3>\
                         <p><i>{{ question.owner}}</i>\
-                            <button v-if="loggedIn" style="float: right">X</button>\
+                            <button v-if="question.owner == user" style="float: right" v-on:click="deleteQuestion">Delete</button>\
                             <button v-if="loggedIn" style="float: right" v-on:click="answerQuestion">Answer</button>\
                         </p>\
                         <textarea rows="4" cols="50" v-model="text" v-if="answeringQuestion" placeholder="Your Answer"/>\
@@ -220,6 +264,10 @@
                 cancelAnswer: function(){
                     this.answeringQuestion = false
                     this.text = ''
+                },
+                deleteQuestion: function() {
+                    this.$emit('update:current_question_id', this.question.id)
+                    this.$emit('delete-question')
                 }
             }
         }
@@ -238,7 +286,6 @@
 
                 username: 'Olaf123',
                 password: 'olaf123',
-                access_token: '',
 
                 current_question_id: 1,
 
@@ -259,27 +306,30 @@
             },
             methods: {
                 newQuestion: function () {
-                    var $access_token = '?access_token=' + app.access_token;
                     $.ajax({
-                        url: 'http://localhost:8080/questions/new'+[$access_token],
+                        url: 'http://localhost:8080/questions/new',
                         type: 'POST',
                         contentType: 'application/JSON',
                         data: JSON.stringify({
                             "title": app.title,
                             "text": app.text
                         }),
+                        //beforeSend: function(xhr,options) {
+                        //    xhr.setRequestHeader('X-CSRF-TOKEN', token)
+                        //},
                         success: function () {
                             app.title = '';
                             app.text = '';
                             app.showAllQuestionsFunc()
                             app.recalculateOwnQuestions()
+                        },
+                        error: function(){
                         }
                     });
                 },
                 answerQuestion: function(){
-                    var $access_token = '?access_token=' + app.access_token;
                     $.ajax({
-                        url: 'http://localhost:8080/questions/answer/'+[app.current_question_id]+[$access_token],
+                        url: 'http://localhost:8080/questions/answer/'+[app.current_question_id],
                         type: 'POST',
                         contentType: 'application/JSON',
                         data: JSON.stringify({
@@ -288,6 +338,16 @@
                         success: function () {
                             app.text = '';
                             app.showDetailsQuestionFunc()
+                        }
+                    })
+                },
+                deleteQuestion: function(){
+                    $.ajax({
+                        url: 'http://localhost:8080/questions/delete/'+[app.current_question_id],
+                        type: 'DELETE',
+                        success: function () {
+                            app.showAllQuestionsFunc()
+                            app.recalculateOwnQuestions()
                         }
                     })
                 },
@@ -306,6 +366,11 @@
                         app.questions = res;
                     });
                 },
+                getOwnAnsweredeQuestions: function () {
+                    $.getJSON('http://localhost:8080/questions/all/ownanswered', function (res) {
+                        app.questions = res;
+                    });
+                },
                 requestQuestion: function() {
                     $.getJSON('http://localhost:8080/questions/view/'+[app.current_question_id], function (res) {
                         app.question = res
@@ -313,46 +378,53 @@
                 },
                 loginFunction: function () {
                     $.ajax({
-                        url: 'http://localhost:8080/oauth/token',
+                        url: 'http://localhost:8080/login',
                         type: 'POST',
-                        xhrFields: {withCredentials: true},
-                        headers: {
-                            "Authorization": "Basic " + btoa('my-trusted-client' + ':' + '')
-                        },
                         data: {
-                            "grant_type": 'password',
                             "username": this.username,
                             "password": this.password
                         },
                         contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
                         success: function (data) {
-                            this.loggedIn = true;
-                            this.loggedUsername = this.username;
-                            this.access_token = data.access_token;
-                            this.username = '';
-                            this.password = '';
-                            this.$forceUpdate();
+                            if(data.message == 'error'){
+                                alert('iugds')
+                            }else {
+                                this.loggedIn = true;
+                                this.loggedUsername = this.username;
+                                this.username = '';
+                                this.password = '';
+                            }
                         }.bind(this),
                         error: function(xhr){
-                            if(xhr.status == '401'){
+                            if(xhr.status == '400'){
                                 alert('Invalid Username-Password Combination')
+                            }
+                            if(xhr.status == 403){
+                                alert('oiuhrge')
                             }
                         }
                     });
                 },
                 logoutFunction: function(){
                     $.ajax({
+                        type: 'POST',
                         url: 'http://localhost:8080/logout',
-                        type: 'GET',
-                        contentType: 'application/JSON',
-                        data: {
-                          justData: ''
-                        },
-                        success: function(){
+                        dataType: "text",
+                        success: function(data) {
+                            if(data.message == 'error'){
+                                alert('izgdsf')
+                            } else {
+                            this.triggerQuestions= [];
+                            this.ownQuestions= [];
                             this.loggedIn = false;
-                            this.access_token = '';
-                        }.bind(this)
-                    });
+                            this.loggedUsername = '';
+                            this.showAllQuestionsFunc();
+                            alert('asda')
+                            }
+                        }
+                    }).done(function(){
+                        alert("it is")
+                    })
                 },
                 registerFunction: function () {
                     $.ajax({
@@ -405,6 +477,7 @@
                     app.showYourQuestions = true
                 },
                 showYourAnsweredQuestionsFunc: function(){
+                    app.getOwnAnsweredeQuestions()
                     app.setAllShowFalse()
                     app.showYourAnswers = true
                 },
@@ -425,7 +498,7 @@
             },
             computed: {
                 calcOwn: function(){
-                    this.ownQuestions;
+                    this.ownQuestions = [];
                     this.loggedUsername;
                     var counter = 0
                     for(var question in this.triggerQuestions){

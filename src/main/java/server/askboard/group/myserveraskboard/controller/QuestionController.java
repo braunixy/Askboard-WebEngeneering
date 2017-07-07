@@ -37,6 +37,11 @@ public class QuestionController {
     public List<Question> getWithoutAnswers() {
         return questionService.findByWithoutAnswers();
     }
+    
+    @RequestMapping(value = "/all/ownanswered", method = RequestMethod.GET)
+    public List<Question> findOwnAnswered() {
+        return questionService.findOwnAnswered();
+    }
 
     @RequestMapping(value = "/view/{id}", method = RequestMethod.GET)
     public Question getQuestionByID(@PathVariable("id") Long id) {
