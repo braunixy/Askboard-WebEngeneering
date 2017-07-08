@@ -5,9 +5,9 @@
     <meta charset="UTF-8"/>
     <title>Web Engi Project</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="_csrf" content="${_csrf.token}"/>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
     <!-- default header name is X-CSRF-TOKEN -->
-    <meta name="_csrf_header" content="${_csrf.headerName}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -169,10 +169,7 @@
         var header = $("meta[name='_csrf_header']").attr("content");
 
         $(document).ajaxSend(function (e, xhr, options) {
-            //alert(header)
-            //xhr.setRequestHeader(header, token);
-            //alert('hallo')
-
+            xhr.setRequestHeader("X-CSRF-TOKEN", token);
         });
     })
 
@@ -345,14 +342,10 @@
                     $.ajax({
                         url: 'http://localhost:8080/questions/new',
                         type: 'POST',
-                        contentType: 'application/JSON',
                         data: JSON.stringify({
                             "title": app.title,
                             "text": app.text
                         }),
-                        //beforeSend: function(xhr,options) {
-                        //    xhr.setRequestHeader('X-CSRF-TOKEN', token)
-                        //},
                         success: function () {
                             app.title = '';
                             app.text = '';
@@ -367,7 +360,6 @@
                     $.ajax({
                         url: 'http://localhost:8080/questions/answer/' + [app.current_question_id],
                         type: 'POST',
-                        contentType: 'application/JSON',
                         data: JSON.stringify({
                             "text": app.text
                         }),
@@ -427,8 +419,7 @@
                         type: 'POST',
                         data: {
                             "username": this.username,
-                            "password": this.password,
-                            "_csrf": $("meta[name='token']").attr('content')
+                            "password": this.password
                         },
                         contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
                         success: function () {
@@ -463,15 +454,12 @@
                 registerFunction: function () {
                     $.ajax({
                         url: 'http://localhost:8080/registration',
-                        type: 'PUT',
+                        type: 'POST',
                         contentType: 'application/JSON',
                         data: JSON.stringify({
                             "username": app.username,
                             "password": app.password
                         }),
-                        beforeSend: function(request) {
-                            return request.setRequestHeader('X-CSRF-Token', $("meta[name='token']").attr('content')).toString();
-                        },
                         success: function () {
                             alert('Your Registration was successful');
                             app.username = '';

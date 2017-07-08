@@ -32,7 +32,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().formLogin().successHandler(new OwnLoginSuccessHandler())
                 .failureHandler(new OwnLoginFailureHandler())
                 .and().authenticationProvider(new CustomAuthenticationProvider(userService, encoder));
-        http.csrf().disable();
     }
     
     @Autowired

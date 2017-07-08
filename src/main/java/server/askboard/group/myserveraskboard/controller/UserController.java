@@ -22,7 +22,7 @@ public class UserController {
     @Autowired
     private UserValidator userValidator;
     
-    @RequestMapping(value = "/registration", method = RequestMethod.PUT)
+    @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public String registration(@RequestBody User user, BindingResult bindingResult,
                                HttpServletResponse response) throws IOException {
         userValidator.validate(user, bindingResult);
@@ -37,15 +37,6 @@ public class UserController {
         return "redirect:/questions/all";
     }
 
-    /*@RequestMapping(value = "/logout" ,method = RequestMethod.POST)
-    public String logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null){
-            new SecurityContextLogoutHandler().logout(request, response, auth);
-        }
-        return "Successfully logged out!";
-    }*/
-    
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String index() {
         return "index";
