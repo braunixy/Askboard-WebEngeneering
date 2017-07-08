@@ -7,20 +7,18 @@ import server.askboard.group.myserveraskboard.entities.Question;
 import server.askboard.group.myserveraskboard.entities.Role;
 import server.askboard.group.myserveraskboard.entities.User;
 import server.askboard.group.myserveraskboard.services.QuestionService;
-import server.askboard.group.myserveraskboard.services.UserService;
+import server.askboard.group.myserveraskboard.services.UserServiceImpl;
 
 import java.util.Arrays;
 
 @Component
 public class Seeder implements CommandLineRunner {
 
-    @Autowired
     private QuestionService questionService;
-    @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @Autowired
-    public Seeder(QuestionService questionService, UserService userService) {
+    public Seeder(QuestionService questionService, UserServiceImpl userService) {
         this.questionService = questionService;
         this.userService = userService;
     }
@@ -45,7 +43,5 @@ public class Seeder implements CommandLineRunner {
 
         questionService.save(seppQuestion);
         userService.findByUsername(seppQuestion.getOwner()).getQuestions().add(seppQuestion);
-
-
     }
 }

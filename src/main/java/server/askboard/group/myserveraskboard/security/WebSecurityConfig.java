@@ -6,29 +6,32 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import server.askboard.group.myserveraskboard.services.UserServiceImpl;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     
+    @Autowired
+    private UserServiceImpl userService;
+    @Autowired
+    private PasswordEncoder encoder;
+    
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http
                 .headers().frameOptions().disable()
-                .and()
-                .authorizeRequests().mvcMatchers("/", "/registration",
-                                                                                      "/questions/all/unanswered",
-                                                                                      "/questions/all/noanswer",
-                                                                                      "/questions/all",
-                                                                                      "/questions/view/**").permitAll()
+                .and().authorizeRequests().mvcMatchers("/", "/registration",
+                                                       "/questions/all/unanswered", "/questions/all/noanswer",
+                                                       "/questions/all", "/questions/view/**").permitAll()
                 .anyRequest().fullyAuthenticated()
-                .mvcMatchers("/questions/new").fullyAuthenticated()
-                .mvcMatchers("/questions/answer/**").fullyAuthenticated()
-                .mvcMatchers("/questions/all/ownanswered").fullyAuthenticated()
-                .mvcMatchers("/questions/delete/**").fullyAuthenticated()
+                .mvcMatchers("/questions/new", "/questions/answer/**", "/questions/all/ownanswered",
+                             "/questions/delete/**").fullyAuthenticated()
                 .and().logout().logoutUrl("/logout").logoutSuccessHandler(new OwnLogoutSuccessHandler())
-                .and().formLogin().successHandler(new OwnSuccessHandler()).failureHandler(new OwnFailureHandler())
-                .and().authenticationProvider(new CustomAuthenticationProvider());
+                .and().formLogin().successHandler(new OwnLoginSuccessHandler())
+                .failureHandler(new OwnLoginFailureHandler())
+                .and().authenticationProvider(new CustomAuthenticationProvider(userService, encoder));
         http.csrf().disable();
     }
     

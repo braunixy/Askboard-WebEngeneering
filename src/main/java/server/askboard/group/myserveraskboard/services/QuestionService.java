@@ -7,7 +7,6 @@ import server.askboard.group.myserveraskboard.entities.Answer;
 import server.askboard.group.myserveraskboard.entities.Question;
 import server.askboard.group.myserveraskboard.repositoties.QuestionRepository;
 import server.askboard.group.myserveraskboard.repositoties.UserRepository;
-import server.askboard.group.myserveraskboard.security.CustomUserDetails;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,10 +26,9 @@ public class QuestionService {
     }
     
     public void insert(Question question) {
-        CustomUserDetails details =
-                (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         
-        question.setOwner(details.getUsername());
+        question.setOwner(username);
         
         if (question.getCreationDate() == null) {
             question.setCreationDate(new Date());
@@ -38,7 +36,7 @@ public class QuestionService {
         question.setAnswered(false);
         question.setWithoutAnswers(true);
         questionRepository.save(question);
-        userRepository.findByUsername(details.getUsername()).getQuestions().add(question);
+        userRepository.findByUsername(username).getQuestions().add(question);
     }
     
     public Question findByID(Long id) {
@@ -47,10 +45,9 @@ public class QuestionService {
     
     public String delete(Long id) {
         Question deleteQuestion = questionRepository.findOne(id);
-        CustomUserDetails details =
-                (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         
-        if (! details.getUsername().equals(deleteQuestion.getOwner())) {
+        if (! username.equals(deleteQuestion.getOwner())) {
             return "Only allowed for own Questions!";
         }
         
@@ -70,18 +67,16 @@ public class QuestionService {
     public List<Question> findOwnAnswered() {
         List<Question> allQuestions = questionRepository.findAll();
         List<Question> ownAnswered = new ArrayList<Question>();
-        CustomUserDetails details = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String user = details.getUsername();
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         
         for (Question question : allQuestions) {
             for (Answer answer : question.getAnswers()) {
-                if(answer.getOwner().equals(user)){
+                if (answer.getOwner().equals(username)) {
                     ownAnswered.add(question);
                     continue;
                 }
             }
         }
-        
         return ownAnswered;
     }
     
@@ -94,8 +89,7 @@ public class QuestionService {
     }
     
     public Question answerQuestionById(Long id, Answer answer) {
-        CustomUserDetails details =
-                (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         
         Question question = questionRepository.findOne(id);
         question.getAnswers().add(answer);
@@ -104,12 +98,30 @@ public class QuestionService {
         if (answer.getCreationDate() == null) {
             answer.setCreationDate(new Date());
         }
-        answer.setOwner(details.getUsername());
+        answer.setOwner(username);
         answer.setParentId(question.getId());
         answer.setAccepted(false);
         
         questionRepository.save(question);
-        userRepository.findByUsername(details.getUsername()).getAnswers().add(answer);
+        userRepository.findByUsername(username).getAnswers().add(answer);
+        
+        return question;
+    }
+    
+    public Question answerQuestion(Long idQuestion, Long idAnswer) {
+        Question question = questionRepository.findOne(idQuestion);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        
+        if (! username.equals(question.getOwner())) {
+            return null;
+        }
+        if(idAnswer > question.getAnswers().size()){
+            return null;
+        }
+        
+        question.getAnswers().get((int) (idAnswer - 1)).setAccepted(true);
+        question.setAnswered(true);
+        question.setAcceptedId(idAnswer);
         
         return question;
     }

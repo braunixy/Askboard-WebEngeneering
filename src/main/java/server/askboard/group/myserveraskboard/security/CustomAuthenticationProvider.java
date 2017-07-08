@@ -1,30 +1,50 @@
 package server.askboard.group.myserveraskboard.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
+import server.askboard.group.myserveraskboard.services.UserServiceImpl;
 
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
+    
+    private UserServiceImpl userService;
+    private PasswordEncoder encoder;
+    
+    @Autowired
+    public CustomAuthenticationProvider(UserServiceImpl userService, PasswordEncoder encoder) {
+        this.userService = userService;
+        this.encoder = encoder;
+    }
     
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String name = authentication.getName();
         String password = authentication.getCredentials().toString();
-        if (name.equals("admin") && password.equals("system")) {
-            List<GrantedAuthority> grantedAuths = new ArrayList<>();
-            grantedAuths.add(new SimpleGrantedAuthority("ROLE_USER"));
-            Authentication auth = new UsernamePasswordAuthenticationToken(name, password, grantedAuths);
-            return auth;
-        } else {
-            return null;
+        CustomUserDetails details = null;
+        try {
+            details = userService.getDetailsByUsername(name);
+        }
+        catch (NullPointerException e) {
+            throw new OwnAuthenticationException("No such User exists");
+        }
+        if (details != null) {
+            if (encoder.matches(password, details.getPassword())) {
+                Authentication auth = new UsernamePasswordAuthenticationToken(details.getUsername(),
+                                                                              details.getPassword(),
+                                                                              details.getAuthorities());
+                return auth;
+            }
+            else {
+                throw new OwnAuthenticationException("Invalid User-Password Combination");
+            }
+        }
+        else {
+            throw new OwnAuthenticationException("No such User exists");
         }
     }
     

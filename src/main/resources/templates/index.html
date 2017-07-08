@@ -22,7 +22,8 @@
                 <li><a href="#" v-on:click="showAllQuestionsFunc">All Questions</a></li>
                 <li><a href="#" v-on:click="showAllUnsolvedQuestionsFunc">Questions Unsolved</a></li>
                 <li><a href="#" v-on:click="showAllUnansweredQuestionsFunc">Questions Unanswered</a></li>
-                <li><a href="#" v-if="loggedIn" v-on:click="showYourAnsweredQuestionsFunc">Your Answered Questions</a></li>
+                <li><a href="#" v-if="loggedIn" v-on:click="showYourAnsweredQuestionsFunc">Your Answered Questions</a>
+                </li>
                 <li><a href="#" v-if="loggedIn" v-on:click="showYourQuestionsFunc">Your Questions</a></li>
                 <li><a href="#" v-if="loggedIn" v-on:click="showAskingNewQuestionFunc">Ask a Question</a></li>
             </ul>
@@ -35,7 +36,8 @@
                 <button type="button" class="btn btn-default" v-if="!loggedIn" v-on:click="loginFunction">Login</button>
                 <button type="button" class="btn btn-default" v-if="!loggedIn" v-on:click="registerFunction">Create User
                 </button>
-                <button type="button" class="btn btn-default" v-if="loggedIn" v-on:click="logoutFunction">Logout</button>
+                <button type="button" class="btn btn-default" v-if="loggedIn" v-on:click="logoutFunction">Logout
+                </button>
 
             </form>
         </div>
@@ -49,12 +51,12 @@
                 v-on:delete-question="deleteQuestion"
                 v-for="question in questions"
                 v-bind:question="question"
-                v-bind:key= "question.id"
+                v-bind:key="question.id"
                 v-bind:logged-in="loggedIn"
                 v-bind:user="loggedUsername"
                 :current_question_id.sync="current_question_id"
                 :text.sync="text"
-                >
+        >
         </questions>
 
     </div>
@@ -65,12 +67,12 @@
                 v-on:request-question="showDetailsQuestionFunc"
                 v-on:delete-question="deleteQuestion"
                 v-bind:question="question"
-                v-bind:key= "question.id"
+                v-bind:key="question.id"
                 v-bind:logged-in="loggedIn"
                 v-bind:user="loggedUsername"
                 :current_question_id.sync="current_question_id"
                 :text.sync="text"
-                >
+        >
         </details-question>
     </div>
 
@@ -82,7 +84,7 @@
                 v-on:delete-question="deleteQuestion"
                 v-for="question in questions"
                 v-bind:question="question"
-                v-bind:key= "question.id"
+                v-bind:key="question.id"
                 v-bind:logged-in="loggedIn"
                 v-bind:user="loggedUsername"
                 :current_question_id.sync="current_question_id"
@@ -110,7 +112,7 @@
                 v-on:delete-question="deleteQuestion"
                 v-for="question in questions"
                 v-bind:question="question"
-                v-bind:key= "question.id"
+                v-bind:key="question.id"
                 v-bind:logged-in="loggedIn"
                 v-bind:user="loggedUsername"
                 :current_question_id.sync="current_question_id"
@@ -127,7 +129,7 @@
                 v-on:delete-question="deleteQuestion"
                 v-for="question in questions"
                 v-bind:question="question"
-                v-bind:key= "question.id"
+                v-bind:key="question.id"
                 v-bind:logged-in="loggedIn"
                 v-bind:user="loggedUsername"
                 :current_question_id.sync="current_question_id"
@@ -144,7 +146,7 @@
                 v-on:delete-question="deleteQuestion"
                 v-for="question in calcOwn"
                 v-bind:question="question"
-                v-bind:key= "question.id"
+                v-bind:key="question.id"
                 v-bind:logged-in="loggedIn"
                 v-bind:user="loggedUsername"
                 :current_question_id.sync="current_question_id"
@@ -166,8 +168,8 @@
         var token = $("meta[name='_csrf']").attr("content");
         var header = $("meta[name='_csrf_header']").attr("content");
 
-        $(document).ajaxSend(function(e, xhr, options) {
-            if ( options.url == 'http://localhost:8080/questions/nessssw' ) {
+        $(document).ajaxSend(function (e, xhr, options) {
+            if (options.url == 'http://localhost:8080/questions/nessssw') {
                 xhr.setRequestHeader('X-CSRF-Token', token);
                 alert('hallo')
             }
@@ -176,15 +178,15 @@
 
     $(function () {
 
-        var Questions= {
-                props: {
-                    question:'',
-                    loggedIn:'',
-                    user:'',
-                    text: '',
-                    answeringQuestion: false
-                },
-                template: '\
+        var Questions = {
+            props: {
+                question: '',
+                loggedIn: '',
+                user: '',
+                text: '',
+                answeringQuestion: false
+            },
+            template: '\
                     <span>\
                         <ul style="border:10px solid lightgray; border-radius: 20px;">\
                             <h2><a href="#" v-on:click="requestQuestion">{{ question.title }} </a></h2>\
@@ -199,36 +201,36 @@
                         </ul>\
                     </span>\
                     ',
-                methods: {
-                    requestQuestion: function(){
-                        this.$emit('update:current_question_id', this.question.id)
-                        this.$emit('request-question')
-                    },
-                    answerQuestion: function(){
-                        this.$emit('update:current_question_id', this.question.id)
-                        this.answeringQuestion = true
-                    },
-                    submitAnswer: function() {
-                        this.answeringQuestion = false
-                        this.$emit('update:text', this.text)
-                        this.$emit('answer-question')
-                    },
-                    cancelAnswer: function(){
-                        this.answeringQuestion = false
-                        this.text = ''
-                    },
-                    deleteQuestion: function() {
-                        this.$emit('update:current_question_id', this.question.id)
-                        this.$emit('delete-question')
-                    }
+            methods: {
+                requestQuestion: function () {
+                    this.$emit('update:current_question_id', this.question.id)
+                    this.$emit('request-question')
+                },
+                answerQuestion: function () {
+                    this.$emit('update:current_question_id', this.question.id)
+                    this.answeringQuestion = true
+                },
+                submitAnswer: function () {
+                    this.answeringQuestion = false
+                    this.$emit('update:text', this.text)
+                    this.$emit('answer-question')
+                },
+                cancelAnswer: function () {
+                    this.answeringQuestion = false
+                    this.text = ''
+                },
+                deleteQuestion: function () {
+                    this.$emit('update:current_question_id', this.question.id)
+                    this.$emit('delete-question')
                 }
+            }
         }
 
-        var DetailsQuestion= {
+        var DetailsQuestion = {
             props: {
                 question: '',
                 loggedIn: '',
-                user:'',
+                user: '',
                 text: '',
                 answeringQuestion: false
             },
@@ -245,29 +247,34 @@
                         <input type="button" v-if="answeringQuestion" v-on:click="submitAnswer" value="Submit"/>\
                         <input type="button" v-if="answeringQuestion" v-on:click="cancelAnswer" value="Cancel"/>\
                         <li v-for="answer in question.answers">\
-                            <p>{{answer.text}}</p>\
-                            <p><i>{{answer.owner}}</i></p>\
+                            <p v-if="!answer.accepted">{{answer.text}}</p>\
+                            <h3 v-if="answer.accepted">{{answer.text}}</h3>\
+                            <p><i>{{answer.owner}}</i>\
+                            <button v-if="question.owner == user" style="float: right" v-on:click="acceptAnswer">Accept Answer</button></p>\
                         </li>\
                     </ul>\
                 </span>\
             ',
-            methods:{
-                answerQuestion: function(){
+            methods: {
+                answerQuestion: function () {
                     this.$emit('update:current_question_id', this.question.id)
                     this.answeringQuestion = true
                 },
-                submitAnswer: function() {
+                submitAnswer: function () {
                     this.answeringQuestion = false
                     this.$emit('update:text', this.text)
                     this.$emit('answer-question')
                 },
-                cancelAnswer: function(){
+                cancelAnswer: function () {
                     this.answeringQuestion = false
                     this.text = ''
                 },
-                deleteQuestion: function() {
+                deleteQuestion: function () {
                     this.$emit('update:current_question_id', this.question.id)
                     this.$emit('delete-question')
+                },
+                acceptAnswer: function () {
+                    this.$emit('update:current_question_id', this.question.id)
                 }
             }
         }
@@ -288,6 +295,7 @@
                 password: 'olaf123',
 
                 current_question_id: 1,
+                accepted_answer_id: 1,
 
                 loggedUsername: '',
                 loggedIn: false,
@@ -301,8 +309,8 @@
                 showYourQuestions: false
             },
             components: {
-                'questions' : Questions,
-                'details-question' : DetailsQuestion
+                'questions': Questions,
+                'details-question': DetailsQuestion
             },
             methods: {
                 newQuestion: function () {
@@ -323,13 +331,13 @@
                             app.showAllQuestionsFunc()
                             app.recalculateOwnQuestions()
                         },
-                        error: function(){
+                        error: function () {
                         }
                     });
                 },
-                answerQuestion: function(){
+                answerQuestion: function () {
                     $.ajax({
-                        url: 'http://localhost:8080/questions/answer/'+[app.current_question_id],
+                        url: 'http://localhost:8080/questions/answer/' + [app.current_question_id],
                         type: 'POST',
                         contentType: 'application/JSON',
                         data: JSON.stringify({
@@ -341,9 +349,18 @@
                         }
                     })
                 },
-                deleteQuestion: function(){
+                acceptAnswer: function () {
                     $.ajax({
-                        url: 'http://localhost:8080/questions/delete/'+[app.current_question_id],
+                        url: 'http://localhost:8080/questions/acceptanswer/' + [app.current_question_id] + '/' + [app.accepted_answer_id],
+                        type: 'POST',
+                        success: function () {
+                            app.showDetailsQuestionFunc()
+                        }
+                    })
+                },
+                deleteQuestion: function () {
+                    $.ajax({
+                        url: 'http://localhost:8080/questions/delete/' + [app.current_question_id],
                         type: 'DELETE',
                         success: function () {
                             app.showAllQuestionsFunc()
@@ -371,8 +388,8 @@
                         app.questions = res;
                     });
                 },
-                requestQuestion: function() {
-                    $.getJSON('http://localhost:8080/questions/view/'+[app.current_question_id], function (res) {
+                requestQuestion: function () {
+                    $.getJSON('http://localhost:8080/questions/view/' + [app.current_question_id], function (res) {
                         app.question = res
                     });
                 },
@@ -385,51 +402,39 @@
                             "password": this.password
                         },
                         contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-                        success: function (data) {
-                            if(data.message == 'error'){
-                                alert('iugds')
-                            }else {
-                                this.loggedIn = true;
-                                this.loggedUsername = this.username;
-                                this.username = '';
-                                this.password = '';
-                            }
+                        success: function () {
+                            this.loggedIn = true;
+                            this.loggedUsername = this.username;
+                            this.username = '';
+                            this.password = '';
                         }.bind(this),
-                        error: function(xhr){
-                            if(xhr.status == '400'){
+                        error: function (xhr, status, error) {
+                            if (xhr.status == '400') {
                                 alert('Invalid Username-Password Combination')
-                            }
-                            if(xhr.status == 403){
-                                alert('oiuhrge')
+                            } else {
+                                alert(xhr.status + ': ' + error.toString())
                             }
                         }
                     });
                 },
-                logoutFunction: function(){
+                logoutFunction: function () {
                     $.ajax({
                         type: 'POST',
                         url: 'http://localhost:8080/logout',
-                        dataType: "text",
-                        success: function(data) {
-                            if(data.message == 'error'){
-                                alert('izgdsf')
-                            } else {
-                            this.triggerQuestions= [];
-                            this.ownQuestions= [];
-                            this.loggedIn = false;
-                            this.loggedUsername = '';
-                            this.showAllQuestionsFunc();
-                            alert('asda')
-                            }
+                        success: function (data, status, xhr) {
+                            alert(data.toString())
+                            app.loggedUsername = '';
+                            app.triggerQuestions = {};
+                            app.ownQuestions = {};
+                            app.loggedIn = false;
+                            app.showAllQuestionsFunc();
                         }
-                    }).done(function(){
-                        alert("it is")
                     })
                 },
                 registerFunction: function () {
                     $.ajax({
                         url: 'http://localhost:8080/registration',
-                        type:'POST',
+                        type: 'POST',
                         contentType: 'application/JSON',
                         data: JSON.stringify({
                             "username": app.username,
@@ -440,48 +445,47 @@
                             app.username = '';
                             app.password = '';
                         },
-                        error: function (xhr) {
-                            alert(xhr.status+" | "+xhr.response+" | "+xhr.response+" | "+xhr.responseText);
-                            alert(JSON.parse(xhr.responseText).message);
+                        error: function (xhr, status, error) {
+                            alert(xhr.responseText);
                         }
 
                     })
                 },
-                showDetailsQuestionFunc: function(){
+                showDetailsQuestionFunc: function () {
                     app.requestQuestion()
                     app.setAllShowFalse()
-                    app.showDetailsQuestion= true
+                    app.showDetailsQuestion = true
 
                 },
-                showAskingNewQuestionFunc: function(){
+                showAskingNewQuestionFunc: function () {
                     app.setAllShowFalse()
                     app.showAskingNewQuestion = true
                 },
-                showAllQuestionsFunc: function(){
+                showAllQuestionsFunc: function () {
                     app.getQuestions()
                     app.setAllShowFalse()
                     app.showAllQuestions = true
                 },
-                showAllUnsolvedQuestionsFunc: function(){
+                showAllUnsolvedQuestionsFunc: function () {
                     app.getUnsolvedQuestions()
                     app.setAllShowFalse()
                     app.showUnsolvedQuestions = true
                 },
-                showAllUnansweredQuestionsFunc: function(){
+                showAllUnansweredQuestionsFunc: function () {
                     app.getUnansweredeQuestions()
                     app.setAllShowFalse()
                     app.showAllUnansweredQuestions = true
                 },
-                showYourQuestionsFunc: function(){
+                showYourQuestionsFunc: function () {
                     app.setAllShowFalse()
                     app.showYourQuestions = true
                 },
-                showYourAnsweredQuestionsFunc: function(){
+                showYourAnsweredQuestionsFunc: function () {
                     app.getOwnAnsweredeQuestions()
                     app.setAllShowFalse()
                     app.showYourAnswers = true
                 },
-                setAllShowFalse: function(){
+                setAllShowFalse: function () {
                     app.showDetailsQuestion = false;
                     app.showAskingNewQuestion = false;
                     app.showAllQuestions = false;
@@ -489,20 +493,22 @@
                     app.showAllUnansweredQuestions = false;
                     app.showYourAnswers = false;
                     app.showYourQuestions = false;
+                    app.title = '';
+                    app.text = '';
                 },
-                recalculateOwnQuestions: function(){
+                recalculateOwnQuestions: function () {
                     $.getJSON('http://localhost:8080/questions/all', function (res) {
                         app.triggerQuestions = res;
                     });
                 }
             },
             computed: {
-                calcOwn: function(){
+                calcOwn: function () {
                     this.ownQuestions = [];
                     this.loggedUsername;
                     var counter = 0
-                    for(var question in this.triggerQuestions){
-                        if(this.triggerQuestions[question].owner == this.loggedUsername){
+                    for (var question in this.triggerQuestions) {
+                        if (this.triggerQuestions[question].owner == this.loggedUsername) {
                             this.ownQuestions[counter] = this.triggerQuestions[question]
                             counter++;
                         }
@@ -510,7 +516,7 @@
                     return this.ownQuestions
                 }
             },
-            created: function(){
+            created: function () {
                 this.getQuestions();
                 this.recalculateOwnQuestions()
             }

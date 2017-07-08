@@ -10,10 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
-public class OwnSuccessHandler implements AuthenticationSuccessHandler {
+public class OwnLoginSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
-        response.getWriter().println("Success");
+        response.getWriter().println("Successfully logged in!");
+        response.setStatus(200);
     }
 }

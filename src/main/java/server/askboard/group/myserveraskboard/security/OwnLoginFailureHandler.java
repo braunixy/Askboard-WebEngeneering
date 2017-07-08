@@ -10,12 +10,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
-public class OwnFailureHandler implements AuthenticationFailureHandler {
+public class OwnLoginFailureHandler implements AuthenticationFailureHandler {
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException e) throws IOException, ServletException {
-        response.getWriter().println("error");
-        response.setStatus(403);
+        response.getWriter().println(e.getLocalizedMessage());
+        response.setStatus(400);
         
     }
 }
