@@ -23,7 +23,7 @@ public class QuestionController {
         return "Doesn't seem to be what you were looking for.";
     }
     
-    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    @RequestMapping(value = "/all", method = {RequestMethod.GET,RequestMethod.PUT})
     public List<Question> getAllQuestions() {
         return questionService.allQuestions();
     }

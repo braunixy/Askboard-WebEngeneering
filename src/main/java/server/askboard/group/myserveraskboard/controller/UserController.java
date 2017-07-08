@@ -22,7 +22,7 @@ public class UserController {
     @Autowired
     private UserValidator userValidator;
     
-    @RequestMapping(value = "/registration", method = RequestMethod.POST)
+    @RequestMapping(value = "/registration", method = RequestMethod.PUT)
     public String registration(@RequestBody User user, BindingResult bindingResult,
                                HttpServletResponse response) throws IOException {
         userValidator.validate(user, bindingResult);

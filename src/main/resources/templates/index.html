@@ -169,14 +169,34 @@
         var header = $("meta[name='_csrf_header']").attr("content");
 
         $(document).ajaxSend(function (e, xhr, options) {
-            if (options.url == 'http://localhost:8080/questions/nessssw') {
-                xhr.setRequestHeader('X-CSRF-Token', token);
-                alert('hallo')
-            }
+            //alert(header)
+            //xhr.setRequestHeader(header, token);
+            //alert('hallo')
+
         });
     })
 
     $(function () {
+
+        var Answer = {
+
+            props: {
+                answer: ''
+            },
+
+            template: '\
+            <span>\
+                        <li>\
+                            <p v-if="!answer.accepted">{{answer.text}}</p>\
+                            <h3 v-if="answer.accepted">{{answer.text}}</h3>\
+                            <p><i>{{answer.owner}}</i>\
+                            <button v-if="question.owner == user" style="float: right" v-on:click="acceptAnswer">Accept Answer</button></p>\
+                        </li>\
+            </span>\
+            '
+
+
+        }
 
         var Questions = {
             props: {
@@ -232,8 +252,14 @@
                 loggedIn: '',
                 user: '',
                 text: '',
-                answeringQuestion: false
+                answeringQuestion: false,
+                accepted_answer_id: 1
             },
+
+            components: {
+                'answer': Answer
+            },
+
             template: '\
                 <span>\
                     <ul style="border:10px solid lightgray; border-radius: 10px;">\
@@ -246,12 +272,13 @@
                         <textarea rows="4" cols="50" v-model="text" v-if="answeringQuestion" placeholder="Your Answer"/>\
                         <input type="button" v-if="answeringQuestion" v-on:click="submitAnswer" value="Submit"/>\
                         <input type="button" v-if="answeringQuestion" v-on:click="cancelAnswer" value="Cancel"/>\
-                        <li v-for="answer in question.answers">\
-                            <p v-if="!answer.accepted">{{answer.text}}</p>\
-                            <h3 v-if="answer.accepted">{{answer.text}}</h3>\
-                            <p><i>{{answer.owner}}</i>\
-                            <button v-if="question.owner == user" style="float: right" v-on:click="acceptAnswer">Accept Answer</button></p>\
-                        </li>\
+                            <!--<answer\
+                            v-for="answer in question.answers"\
+                            v-bind:question="answer"\
+                            v-bind:key="answer.id"\
+                            :accepted_answer_id.sync="accepted_answer_id"\
+                            >\
+                            </answer>\-->\
                     </ul>\
                 </span>\
             ',
@@ -311,6 +338,7 @@
             components: {
                 'questions': Questions,
                 'details-question': DetailsQuestion
+
             },
             methods: {
                 newQuestion: function () {
@@ -399,7 +427,8 @@
                         type: 'POST',
                         data: {
                             "username": this.username,
-                            "password": this.password
+                            "password": this.password,
+                            "_csrf": $("meta[name='token']").attr('content')
                         },
                         contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
                         success: function () {
@@ -412,7 +441,7 @@
                             if (xhr.status == '400') {
                                 alert('Invalid Username-Password Combination')
                             } else {
-                                alert(xhr.status + ': ' + error.toString())
+                                alert(xhr.status + ': ' + xhr.response)
                             }
                         }
                     });
@@ -434,12 +463,15 @@
                 registerFunction: function () {
                     $.ajax({
                         url: 'http://localhost:8080/registration',
-                        type: 'POST',
+                        type: 'PUT',
                         contentType: 'application/JSON',
                         data: JSON.stringify({
                             "username": app.username,
                             "password": app.password
                         }),
+                        beforeSend: function(request) {
+                            return request.setRequestHeader('X-CSRF-Token', $("meta[name='token']").attr('content')).toString();
+                        },
                         success: function () {
                             alert('Your Registration was successful');
                             app.username = '';
