@@ -36,8 +36,8 @@
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
                     </input>
                 </div>
-                <button type="button" class="btn btn-default" v-if="!loggedIn" v-on:click="checkUsernamebeforeLogin">Login</button>
-                <button type="button" class="btn btn-default" v-if="!loggedIn" v-on:click="checkUsernamebeforeRegister">Create User
+                <button type="button" class="btn btn-default" v-if="!loggedIn" v-on:click="loginFunction">Login</button>
+                <button type="button" class="btn btn-default" v-if="!loggedIn" v-on:click="registerFunction">Create User
                 </button>
                 <button type="button" class="btn btn-default" v-if="loggedIn" v-on:click="logoutFunction">Logout
                 </button>
@@ -60,7 +60,6 @@
                 :text.sync="text"
         >
         </questions>
-
     </div>
 
     <div id="detail" v-if="showDetailsQuestion">
@@ -424,23 +423,20 @@
                         app.question = res
                     });
                 },
-
                 checkUsernamebeforeLogin:function(){
                     if(!this.username || !this.password){
                         alert('Empty Username or/and Passwords are invalid')
                     }else{
-                        loginFunction();
+                        app.loginFunction();
                     }
                 },
-
                 checkUsernamebeforeRegister:function(){
                     if(!this.username || !this.password){
                         alert('Empty Username or/and Passwords are invalid')
                     }else{
-                        registerFunction();
+                        app.registerFunction();
                     }
                 },
-
                 loginFunction: function () {
                     $.ajax({
                         url: 'http://localhost:8080/login',
