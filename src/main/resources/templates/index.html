@@ -267,6 +267,7 @@
                             <span v-if="!question.answered">\
                             <input type="button" v-if="question.owner === user" style="float: right" v-on:click="acceptAnswer(answer.id)" value="Accept Answer"/>\
                             </span></p>\
+                            <h3 v-if="answer.accepted">----------------</h3>\
                         </ul>\
                         <textarea rows="4" cols="50" v-model="text" v-if="answeringQuestion" placeholder="Your Answer"/>\
                         <input type="button" v-if="answeringQuestion" v-on:click="submitAnswer" value="Submit"/>\
