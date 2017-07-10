@@ -66,11 +66,13 @@
                 v-on:answer-question="answerQuestion"
                 v-on:request-question="showDetailsQuestionFunc"
                 v-on:delete-question="deleteQuestion"
+                v-on:accept-answer="acceptAnswer"
                 v-bind:question="question"
                 v-bind:key="question.id"
                 v-bind:logged-in="loggedIn"
                 v-bind:user="loggedUsername"
                 :current_question_id.sync="current_question_id"
+                :accepted_ansewer_id.sync="accepted_answer_id"
                 :text.sync="text"
         >
         </details-question>
@@ -164,14 +166,12 @@
 <script src="https://unpkg.com/vue"></script>
 <script>
 
-    $(function () {
         var token = $("meta[name='_csrf']").attr("content");
         var header = $("meta[name='_csrf_header']").attr("content");
 
         $(document).ajaxSend(function (e, xhr, options) {
-            xhr.setRequestHeader("X-CSRF-TOKEN", token);
+            xhr.setRequestHeader(header, token);
         });
-    })
 
     $(function () {
 
@@ -206,8 +206,8 @@
             template: '\
                     <span>\
                         <ul style="border:10px solid lightgray; border-radius: 20px;">\
-                            <h2><a href="#" v-on:click="requestQuestion">{{ question.title }} </a></h2>\
-                            <h4>{{ question.text }} </h4>\
+                            <h2><a href="#" v-on:click="requestQuestion">{{ question.title | teasertitle }} </a></h2>\
+                            <h4>{{ question.text | teasertext }} </h4>\
                             <p><i>{{ question.owner}}</i>\
                             <button v-if="question.owner == user" style="float: right" v-on:click="deleteQuestion">Delete</button>\
                             <button v-if="loggedIn" style="float: right" v-on:click="answerQuestion">Answer</button>\
@@ -240,6 +240,25 @@
                     this.$emit('update:current_question_id', this.question.id)
                     this.$emit('delete-question')
                 }
+            },
+            filters: {
+                teasertext: function (value) {
+                    if (!value) return ''
+                    value = value.toString()
+                    if(value.length >= 150){
+                        return value.substring(0, 150) + "..."
+                    }
+                    return value
+                },
+                teasertitle: function (value) {
+                    if (!value) return ''
+                    value = value.toString()
+                    if(value.length >= 50){
+                        return value.substring(0, 50) + "..."
+                    }
+                    return value
+
+                }
             }
         }
 
@@ -266,6 +285,12 @@
                             <button v-if="question.owner == user" style="float: right" v-on:click="deleteQuestion">Delete</button>\
                             <button v-if="loggedIn" style="float: right" v-on:click="answerQuestion">Answer</button>\
                         </p>\
+                        <ul v-for="answer in question.answers">\
+                            <h4>{{answer.text}}</h4>\
+                            <p><i>{{answer.owner}}</i>\
+                            <input type="button" v-if="question.owner === user" v-on:click="acceptAnswer(answer.id)" value="Accept Answer"/>\
+                            </p>\
+                        </ul>\
                         <textarea rows="4" cols="50" v-model="text" v-if="answeringQuestion" placeholder="Your Answer"/>\
                         <input type="button" v-if="answeringQuestion" v-on:click="submitAnswer" value="Submit"/>\
                         <input type="button" v-if="answeringQuestion" v-on:click="cancelAnswer" value="Cancel"/>\
@@ -297,8 +322,11 @@
                     this.$emit('update:current_question_id', this.question.id)
                     this.$emit('delete-question')
                 },
-                acceptAnswer: function () {
+                acceptAnswer: function (answerId) {
                     this.$emit('update:current_question_id', this.question.id)
+                    this.$emit('update:accepted_answer_id', answerId)
+                    this.$emit('accept-answer')
+                    alert(answerId)
                 }
             }
         }
@@ -342,6 +370,7 @@
                     $.ajax({
                         url: 'http://localhost:8080/questions/new',
                         type: 'POST',
+                        contentType: 'application/JSON',
                         data: JSON.stringify({
                             "title": app.title,
                             "text": app.text
@@ -360,6 +389,7 @@
                     $.ajax({
                         url: 'http://localhost:8080/questions/answer/' + [app.current_question_id],
                         type: 'POST',
+                        contentType: 'application/JSON',
                         data: JSON.stringify({
                             "text": app.text
                         }),
@@ -391,6 +421,12 @@
                 getQuestions: function () {
                     $.getJSON('http://localhost:8080/questions/all', function (res) {
                         app.questions = res;
+                        if(token == ""){
+                            var tmp = document.cookie.match(new RegExp('[; ]'+ 'XSRF-TOKEN'+'=([^\\s,.;]*)'));
+                            if(tmp){
+                                token = tmp[tmp.length-1]
+                            }
+                        }
                     });
                 },
                 getUnsolvedQuestions: function () {
@@ -404,9 +440,13 @@
                     });
                 },
                 getOwnAnsweredeQuestions: function () {
-                    $.getJSON('http://localhost:8080/questions/all/ownanswered', function (res) {
-                        app.questions = res;
-                    });
+                    $.ajax({
+                        url:'http://localhost:8080/questions/all/ownanswered',
+                        type: 'POST',
+                        success: function(res){
+                            app.questions = res
+                        }
+                    })
                 },
                 requestQuestion: function () {
                     $.getJSON('http://localhost:8080/questions/view/' + [app.current_question_id], function (res) {
@@ -422,11 +462,15 @@
                             "password": this.password
                         },
                         contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-                        success: function () {
+                        success: function (xhr) {
                             this.loggedIn = true;
                             this.loggedUsername = this.username;
                             this.username = '';
                             this.password = '';
+                            var tmp = document.cookie.match(new RegExp('[; ]'+ 'XSRF-TOKEN'+'=([^\\s,.;]*)'));
+                            if(tmp){
+                                token = tmp[tmp.length-1]
+                            }
                         }.bind(this),
                         error: function (xhr, status, error) {
                             if (xhr.status == '400') {
@@ -443,11 +487,15 @@
                         url: 'http://localhost:8080/logout',
                         success: function (data, status, xhr) {
                             alert(data.toString())
-                            app.loggedUsername = '';
-                            app.triggerQuestions = {};
-                            app.ownQuestions = {};
-                            app.loggedIn = false;
+                            this.loggedUsername = '';
+                            this.triggerQuestions = {};
+                            this.ownQuestions = {};
+                            this.loggedIn = false;
+                            token = "";
                             app.showAllQuestionsFunc();
+                        }.bind(this),
+                        error: function (xhr, status, error) {
+                            alert(xhr.responseText);
                         }
                     })
                 },

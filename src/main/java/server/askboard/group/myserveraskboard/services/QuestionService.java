@@ -72,6 +72,9 @@ public class QuestionService {
         for (Question question : allQuestions) {
             for (Answer answer : question.getAnswers()) {
                 if (answer.getOwner().equals(username)) {
+                    if(ownAnswered.contains(question)){
+                        continue;
+                    }
                     ownAnswered.add(question);
                     continue;
                 }

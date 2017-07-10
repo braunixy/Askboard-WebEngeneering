@@ -38,7 +38,7 @@ public class QuestionController {
         return questionService.findByWithoutAnswers();
     }
     
-    @RequestMapping(value = "/all/ownanswered", method = RequestMethod.GET)
+    @RequestMapping(value = "/all/ownanswered", method = RequestMethod.POST)
     public List<Question> findOwnAnswered() {
         return questionService.findOwnAnswered();
     }
