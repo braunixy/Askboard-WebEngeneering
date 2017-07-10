@@ -103,6 +103,8 @@
             <p/>
             <textarea rows="10" cols="150" v-model="text" placeholder="Whats your Problem"/>
             <p/>
+            <p v-if="text.length == 0" style="color: darkred">Text cannot be empty!</p>
+            <p v-if="title.length == 0" style="color: darkred">Title cannot be empty!</p>
             <input type="button" v-on:click="newQuestion" value="Ask your question"/>
         </form>
     </div>
@@ -158,7 +160,6 @@
         </questions>
     </div>
 
-
 </div>
 
 </body>
@@ -167,12 +168,12 @@
 <script src="https://unpkg.com/vue"></script>
 <script>
 
-        var token = $("meta[name='_csrf']").attr("content");
-        var header = $("meta[name='_csrf_header']").attr("content");
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
 
-        $(document).ajaxSend(function (e, xhr, options) {
-            xhr.setRequestHeader(header, token);
-        });
+    $(document).ajaxSend(function (e, xhr, options) {
+        xhr.setRequestHeader(header, token);
+    });
 
     $(function () {
 
@@ -226,7 +227,7 @@
                 teasertext: function (value) {
                     if (!value) return ''
                     value = value.toString()
-                    if(value.length >= 150){
+                    if (value.length >= 150) {
                         return value.substring(0, 150) + "..."
                     }
                     return value
@@ -234,7 +235,7 @@
                 teasertitle: function (value) {
                     if (!value) return ''
                     value = value.toString()
-                    if(value.length >= 50){
+                    if (value.length >= 50) {
                         return value.substring(0, 50) + "..."
                     }
                     return value
@@ -301,7 +302,6 @@
                 }
             }
         }
-
 
         var app = new Vue({
             el: "#app",
@@ -391,10 +391,10 @@
                 getQuestions: function () {
                     $.getJSON('http://localhost:8080/questions/all', function (res) {
                         app.questions = res;
-                        if(token == ""){
-                            var tmp = document.cookie.match(new RegExp('[; ]'+ 'XSRF-TOKEN'+'=([^\\s,.;]*)'));
-                            if(tmp){
-                                token = tmp[tmp.length-1]
+                        if (token == "") {
+                            var tmp = document.cookie.match(new RegExp('[; ]' + 'XSRF-TOKEN' + '=([^\\s,.;]*)'));
+                            if (tmp) {
+                                token = tmp[tmp.length - 1]
                             }
                         }
                     });
@@ -411,9 +411,9 @@
                 },
                 getOwnAnsweredeQuestions: function () {
                     $.ajax({
-                        url:'http://localhost:8080/questions/all/ownanswered',
+                        url: 'http://localhost:8080/questions/all/ownanswered',
                         type: 'POST',
-                        success: function(res){
+                        success: function (res) {
                             app.questions = res
                         }
                     })
@@ -423,17 +423,17 @@
                         app.question = res
                     });
                 },
-                checkUsernamebeforeLogin:function(){
-                    if(!this.username || !this.password){
+                checkUsernamebeforeLogin: function () {
+                    if (!this.username || !this.password) {
                         alert('Empty Username or/and Passwords are invalid')
-                    }else{
+                    } else {
                         app.loginFunction();
                     }
                 },
-                checkUsernamebeforeRegister:function(){
-                    if(!this.username || !this.password){
+                checkUsernamebeforeRegister: function () {
+                    if (!this.username || !this.password) {
                         alert('Empty Username or/and Passwords are invalid')
-                    }else{
+                    } else {
                         app.registerFunction();
                     }
                 },
@@ -451,9 +451,9 @@
                             this.loggedUsername = this.username;
                             this.username = '';
                             this.password = '';
-                            var tmp = document.cookie.match(new RegExp('[; ]'+ 'XSRF-TOKEN'+'=([^\\s,.;]*)'));
-                            if(tmp){
-                                token = tmp[tmp.length-1]
+                            var tmp = document.cookie.match(new RegExp('[; ]' + 'XSRF-TOKEN' + '=([^\\s,.;]*)'));
+                            if (tmp) {
+                                token = tmp[tmp.length - 1]
                             }
                         }.bind(this),
                         error: function (xhr, status, error) {
