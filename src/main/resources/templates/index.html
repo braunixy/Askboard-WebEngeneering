@@ -72,7 +72,7 @@
                 v-bind:logged-in="loggedIn"
                 v-bind:user="loggedUsername"
                 :current_question_id.sync="current_question_id"
-                :accepted_ansewer_id.sync="accepted_answer_id"
+                :accepted_answer_id.sync="accepted_answer_id"
                 :text.sync="text"
         >
         </details-question>
@@ -175,26 +175,6 @@
 
     $(function () {
 
-        var Answer = {
-
-            props: {
-                answer: ''
-            },
-
-            template: '\
-            <span>\
-                        <li>\
-                            <p v-if="!answer.accepted">{{answer.text}}</p>\
-                            <h3 v-if="answer.accepted">{{answer.text}}</h3>\
-                            <p><i>{{answer.owner}}</i>\
-                            <button v-if="question.owner == user" style="float: right" v-on:click="acceptAnswer">Accept Answer</button></p>\
-                        </li>\
-            </span>\
-            '
-
-
-        }
-
         var Questions = {
             props: {
                 question: '',
@@ -268,14 +248,8 @@
                 loggedIn: '',
                 user: '',
                 text: '',
-                answeringQuestion: false,
-                accepted_answer_id: 1
+                answeringQuestion: false
             },
-
-            components: {
-                'answer': Answer
-            },
-
             template: '\
                 <span>\
                     <ul style="border:10px solid lightgray; border-radius: 10px;">\
@@ -286,21 +260,17 @@
                             <button v-if="loggedIn" style="float: right" v-on:click="answerQuestion">Answer</button>\
                         </p>\
                         <ul v-for="answer in question.answers">\
-                            <h4>{{answer.text}}</h4>\
+                            <h3 v-if="answer.accepted">---Accepted Answer---</h3>\
+                            <h2 v-if="answer.accepted">{{answer.text}}</h2>\
+                            <h4 v-if="!answer.accepted">{{answer.text}}</h4>\
                             <p><i>{{answer.owner}}</i>\
-                            <input type="button" v-if="question.owner === user" v-on:click="acceptAnswer(answer.id)" value="Accept Answer"/>\
-                            </p>\
+                            <span v-if="!question.answered">\
+                            <input type="button" v-if="question.owner === user" style="float: right" v-on:click="acceptAnswer(answer.id)" value="Accept Answer"/>\
+                            </span></p>\
                         </ul>\
                         <textarea rows="4" cols="50" v-model="text" v-if="answeringQuestion" placeholder="Your Answer"/>\
                         <input type="button" v-if="answeringQuestion" v-on:click="submitAnswer" value="Submit"/>\
                         <input type="button" v-if="answeringQuestion" v-on:click="cancelAnswer" value="Cancel"/>\
-                            <!--<answer\
-                            v-for="answer in question.answers"\
-                            v-bind:question="answer"\
-                            v-bind:key="answer.id"\
-                            :accepted_answer_id.sync="accepted_answer_id"\
-                            >\
-                            </answer>\-->\
                     </ul>\
                 </span>\
             ',
@@ -326,7 +296,6 @@
                     this.$emit('update:current_question_id', this.question.id)
                     this.$emit('update:accepted_answer_id', answerId)
                     this.$emit('accept-answer')
-                    alert(answerId)
                 }
             }
         }
@@ -363,7 +332,6 @@
             components: {
                 'questions': Questions,
                 'details-question': DetailsQuestion
-
             },
             methods: {
                 newQuestion: function () {

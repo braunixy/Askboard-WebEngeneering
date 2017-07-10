@@ -51,7 +51,7 @@ public class QuestionController {
     @RequestMapping(value = "/acceptanswer/{id-question}/{id-answer}", method = RequestMethod.POST)
     public Question acceptAnswer(@PathVariable("id-question") Long idQuestion,
                                  @PathVariable("id-answer") Long idAnswer) {
-        return questionService.answerQuestion(idQuestion, idAnswer);
+        return questionService.acceptAnswerQuestion(idQuestion, idAnswer);
     }
     
     @RequestMapping(value = "/new", method = RequestMethod.POST)

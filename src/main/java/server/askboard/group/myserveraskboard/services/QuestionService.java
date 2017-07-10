@@ -111,7 +111,7 @@ public class QuestionService {
         return question;
     }
     
-    public Question answerQuestion(Long idQuestion, Long idAnswer) {
+    public Question acceptAnswerQuestion(Long idQuestion, Long idAnswer) {
         Question question = questionRepository.findOne(idQuestion);
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         
@@ -125,6 +125,8 @@ public class QuestionService {
         question.getAnswers().get((int) (idAnswer - 1)).setAccepted(true);
         question.setAnswered(true);
         question.setAcceptedId(idAnswer);
+    
+        questionRepository.save(question);
         
         return question;
     }
