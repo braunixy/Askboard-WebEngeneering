@@ -337,23 +337,25 @@
             },
             methods: {
                 newQuestion: function () {
-                    $.ajax({
-                        url: 'http://localhost:8080/questions/new',
-                        type: 'POST',
-                        contentType: 'application/JSON',
-                        data: JSON.stringify({
-                            "title": app.title,
-                            "text": app.text
-                        }),
-                        success: function () {
-                            app.title = '';
-                            app.text = '';
-                            app.showAllQuestionsFunc()
-                            app.recalculateOwnQuestions()
-                        },
-                        error: function () {
-                        }
-                    });
+                    if(app.title.length >0 && app.text.length > 0) {
+                        $.ajax({
+                            url: 'http://localhost:8080/questions/new',
+                            type: 'POST',
+                            contentType: 'application/JSON',
+                            data: JSON.stringify({
+                                "title": app.title,
+                                "text": app.text
+                            }),
+                            success: function () {
+                                app.title = '';
+                                app.text = '';
+                                app.showAllQuestionsFunc()
+                                app.recalculateOwnQuestions()
+                            },
+                            error: function () {
+                            }
+                        });
+                    }
                 },
                 answerQuestion: function () {
                     $.ajax({
