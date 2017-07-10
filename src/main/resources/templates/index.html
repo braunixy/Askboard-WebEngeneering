@@ -337,7 +337,7 @@
             },
             methods: {
                 newQuestion: function () {
-                    if(app.title.length >0 && app.text.length > 0) {
+                    if(!(app.title.length === 0 || app.text.length === 0)) {
                         $.ajax({
                             url: 'http://localhost:8080/questions/new',
                             type: 'POST',
