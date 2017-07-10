@@ -26,6 +26,7 @@
                 </li>
                 <li><a href="#" v-if="loggedIn" v-on:click="showYourQuestionsFunc">Your Questions</a></li>
                 <li><a href="#" v-if="loggedIn" v-on:click="showAskingNewQuestionFunc">Ask a Question</a></li>
+                <li><a v-if="loggedIn" style="color: coral">Logged in as {{loggedUsername}}</a></li>
             </ul>
             <form class="navbar-form navbar-right">
                 <div class="form-group">
@@ -38,7 +39,6 @@
                 </button>
                 <button type="button" class="btn btn-default" v-if="loggedIn" v-on:click="logoutFunction">Logout
                 </button>
-
             </form>
         </div>
     </nav>
