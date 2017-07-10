@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
 
     <meta charset="UTF-8"/>
@@ -33,9 +33,11 @@
                     <input type="text" class="form-control" v-model="username" v-if="!loggedIn" placeholder="Username"/>
                     <input type="password" class="form-control" v-model="password" v-if="!loggedIn"
                            placeholder="Password"/>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+                    </input>
                 </div>
-                <button type="button" class="btn btn-default" v-if="!loggedIn" v-on:click="loginFunction">Login</button>
-                <button type="button" class="btn btn-default" v-if="!loggedIn" v-on:click="registerFunction">Create User
+                <button type="button" class="btn btn-default" v-if="!loggedIn" v-on:click="checkUsernamebeforeLogin">Login</button>
+                <button type="button" class="btn btn-default" v-if="!loggedIn" v-on:click="checkUsernamebeforeRegister">Create User
                 </button>
                 <button type="button" class="btn btn-default" v-if="loggedIn" v-on:click="logoutFunction">Logout
                 </button>
@@ -422,6 +424,23 @@
                         app.question = res
                     });
                 },
+
+                checkUsernamebeforeLogin:function(){
+                    if(!this.username || !this.password){
+                        alert('Empty Username or/and Passwords are invalid')
+                    }else{
+                        loginFunction();
+                    }
+                },
+
+                checkUsernamebeforeRegister:function(){
+                    if(!this.username || !this.password){
+                        alert('Empty Username or/and Passwords are invalid')
+                    }else{
+                        registerFunction();
+                    }
+                },
+
                 loginFunction: function () {
                     $.ajax({
                         url: 'http://localhost:8080/login',
