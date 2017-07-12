@@ -40,7 +40,7 @@ Um unser Projekt zu starten/testen gibt es zwei Möglichkeiten:
   
   
   Öfnnen Sie einen Browser(Wir verwendeten bei der Erstellung des Projekts 
-  ausschließlich Mozilla Firefox).
+  Mozilla Firefox und Internet Explorer).
   Gehen Sie nach erfolgreichen Starten des Servers auf die URL:
   
       http://localhost:8080/
