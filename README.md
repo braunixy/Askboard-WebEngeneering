@@ -3,12 +3,14 @@
 ReadMe für WebEngineering-Projekt SS 2017 vom Team "qwert"
 
 Teammitglieder:
-Fabian Moker (72628) - FrontEnd
-Michael Braunsperger (74977) - BackEnd
+  Fabian Moker (72628) - FrontEnd
+  Michael Braunsperger (74977) - BackEnd
 
 Um unser Projekt zu starten/testen gibt es zwei Möglichkeiten:
 
-1.Hier gibt es ebenfalls zwei Startmöglichkeiten a) ohne vorgenerierte Fragen und User und b) mit vorgenerierte Fragen und User
+1.
+Hier gibt es ebenfalls zwei Startmöglichkeiten 
+a) ohne vorgenerierte Fragen und User und b) mit vorgenerierte Fragen und User
 
   a)
   Laden Sie die "my-server.jar" Datei herunter. 
@@ -44,8 +46,17 @@ Um unser Projekt zu starten/testen gibt es zwei Möglichkeiten:
   Der Server ist nun testbereit.
   Folgende User mit dazugehörigen Passwörtern sind nun vorgeneriert:
   
-  Username: Olaf123   ,  Sepp123    , Adolf123    , admin
-  Password: olaf123   ,  sepp123    , adolf123    , admin
+  Username: Olaf123
+  Password: olaf123
+  
+  Username: Sepp123
+  Password: sepp123
+  
+  Username: Adolf123
+  Password: adolf123
+  
+  Username: admin
+  Password: admin
   
 2.
   Laden Sie via Intellij oder Eclipse den Code herunter und führen Sie die Klasse "MyServerAskboardApplication.java" aus.
