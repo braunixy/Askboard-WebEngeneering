@@ -25,7 +25,7 @@ public class Seeder implements CommandLineRunner {
     
     @Override
     public void run(String... strings) throws Exception {
-        boolean create = true;
+        boolean create = false;
         for (String string : strings) {
             if (string.equalsIgnoreCase("--cc") || string.equalsIgnoreCase("--createcontent")) {
                 create = true;
