@@ -3,14 +3,15 @@
 ReadMe für WebEngineering-Projekt SS 2017 vom Team "qwert"
 
 Teammitglieder:
+
   Fabian Moker (72628) - FrontEnd
   Michael Braunsperger (74977) - BackEnd
 
 Um unser Projekt zu starten/testen gibt es zwei Möglichkeiten:
 
-1.
-Hier gibt es ebenfalls zwei Startmöglichkeiten 
-a) ohne vorgenerierte Fragen und User und b) mit vorgenerierte Fragen und User
+  1.
+   Hier gibt es ebenfalls zwei Startmöglichkeiten 
+   a) ohne vorgenerierte Fragen und User und b) mit vorgenerierte Fragen und User
 
   a)
   Laden Sie die "my-server.jar" Datei herunter. 
