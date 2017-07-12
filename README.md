@@ -4,9 +4,9 @@ ReadMe für WebEngineering-Projekt SS 2017 vom Team "qwert"
 
 Teammitglieder:
 
-  Fabian Moker (72628) - FrontEnd
+  Fabian Moker (72628)
   
-  Michael Braunsperger (74977) - BackEnd
+  Michael Braunsperger (74977)
 
 Um unser Projekt zu starten/testen gibt es zwei Möglichkeiten:
 
