@@ -38,6 +38,9 @@ public class Seeder implements CommandLineRunner {
                     new User("Olaf123", "olaf123", Arrays.asList(new Role("ROLE_USER"), new Role("ROLE_CLIENT"))));
             userService.save(
                     new User("Sepp123", "sepp123", Arrays.asList(new Role("ROLE_USER"), new Role("ROLE_CLIENT"))));
+            userService.save(
+                    new User("Adolf123", "adolf123", Arrays.asList(new Role("ROLE_USER"), new Role("ROLE_CLIENT")
+                    )));
             
             Question olafQuestion = new Question("Olaf123", "First Post",
                                                  "Just wanted to create the first post! And then there's some random "
