@@ -1,0 +1,68 @@
+# Askboard-WebEngineering
+
+ReadMe für WebEngineering-Projekt SS 2017 vom Team "qwert"
+
+Teammitglieder:
+Fabian Moker (72628) - FrontEnd
+Michael Braunsperger (74977) - BackEnd
+
+Um unser Projekt zu starten/testen gibt es zwei Möglichkeiten:
+
+1.Hier gibt es ebenfalls zwei Startmöglichkeiten a) ohne vorgenerierte Fragen und User und b) mit vorgenerierte Fragen und User
+
+  a)
+  Laden Sie die "my-server.jar" Datei herunter. 
+  Führen Sie die Datei "my-server.jar" aus und öffnen Sie einen Browser (Wir verwendeten bei der Erstellung des Projekts 
+  ausschließlich Mozilla Firefox).
+  Gehen Sie nach erfolgreichen Starten des Servers auf die URL:
+  
+      http://localhost:8080/
+    
+  Der Server ist nun testbereit.
+  
+  b)
+  
+    Laden Sie die "my-server.jar" Datei herunter. 
+    Führen Sie die Datei "my-server.jar" mittels Cmd Leiste mit folgendem Befehl aus:
+  
+    (Beispielsweise)
+    java -jar C:\User\my-server.jar --cc
+    
+    ODER
+    
+    Laden Sie die "my-server-content.jar" Datei herunter.
+    Führen Sie die Datei "my-server-content.jar" aus.
+  
+  
+  
+  Öfnnen Sie einen Browser(Wir verwendeten bei der Erstellung des Projekts 
+  ausschließlich Mozilla Firefox).
+  Gehen Sie nach erfolgreichen Starten des Servers auf die URL:
+  
+      http://localhost:8080/
+    
+  Der Server ist nun testbereit.
+  Folgende User mit dazugehörigen Passwörtern sind nun vorgeneriert:
+  
+  Username: Olaf123   ,  Sepp123    , Adolf123    , admin
+  Password: olaf123   ,  sepp123    , adolf123    , admin
+  
+2.
+  Laden Sie via Intellij oder Eclipse den Code herunter und führen Sie die Klasse "MyServerAskboardApplication.java" aus.
+  Öfnnen Sie einen Browser(Wir verwendeten bei der Erstellung des Projekts 
+  ausschließlich Mozilla Firefox).
+  Gehen Sie nach erfolgreichen Starten des Servers auf die URL:
+  
+      http://localhost:8080/
+    
+  Der Server ist nun testbereit.
+  
+  Um vorgenerierten Content zu haben gehen Sie in die Klasse "Seeder.java" und setzen sie in Zeiel 28 die Boolean Variable 
+  "create" auf "true".
+  Öfnnen Sie einen Browser(Wir verwendeten bei der Erstellung des Projekts 
+  ausschließlich Mozilla Firefox).
+  Gehen Sie nach erfolgreichen Starten des Servers auf die URL:
+  
+      http://localhost:8080/
+    
+  Der Server ist nun testbereit.
