@@ -22,13 +22,13 @@ Um unser Projekt zu starten/testen gibt es zwei Möglichkeiten:
   
   b)
   
-    Laden Sie die "my-server.jar" Datei herunter. 
-    Führen Sie die Datei "my-server.jar" mittels Cmd Leiste mit folgendem Befehl aus:
+  Laden Sie die "my-server.jar" Datei herunter. 
+  Führen Sie die Datei "my-server.jar" mittels Cmd Leiste mit folgendem Befehl aus:
   
     (Beispielsweise)
     java -jar C:\User\my-server.jar --cc
     
-    ODER
+  ODER
     
     Laden Sie die "my-server-content.jar" Datei herunter.
     Führen Sie die Datei "my-server-content.jar" aus.
@@ -59,7 +59,7 @@ Um unser Projekt zu starten/testen gibt es zwei Möglichkeiten:
   
   Um vorgenerierten Content zu haben gehen Sie in die Klasse "Seeder.java" und setzen sie in Zeiel 28 die Boolean Variable 
   "create" auf "true".
-  Öfnnen Sie einen Browser(Wir verwendeten bei der Erstellung des Projekts 
+  Öffnen Sie einen Browser(Wir verwendeten bei der Erstellung des Projekts 
   ausschließlich Mozilla Firefox).
   Gehen Sie nach erfolgreichen Starten des Servers auf die URL:
   
