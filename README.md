@@ -10,7 +10,7 @@ Teammitglieder:
 
 Um unser Projekt zu starten/testen gibt es zwei Möglichkeiten:
 
-  1.
+  1)
    Hier gibt es ebenfalls zwei Startmöglichkeiten 
    a) ohne vorgenerierte Fragen und User und b) mit vorgenerierte Fragen und User
 
@@ -60,7 +60,7 @@ Um unser Projekt zu starten/testen gibt es zwei Möglichkeiten:
   Username: admin
   Password: admin
   
-  2.
+  2)
   Laden Sie via Intellij oder Eclipse den Code herunter und führen Sie die Klasse "MyServerAskboardApplication.java" aus.
   Öfnnen Sie einen Browser(Wir verwendeten bei der Erstellung des Projekts 
   Mozilla Firefox und Internet Explorer).
