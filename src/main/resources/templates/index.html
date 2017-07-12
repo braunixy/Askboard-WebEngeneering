@@ -194,9 +194,12 @@
                             <button v-if="question.owner == user" style="float: right" v-on:click="deleteQuestion">Delete</button>\
                             <button v-if="loggedIn" style="float: right" v-on:click="answerQuestion">Answer</button>\
                             </p>\
-                            <textarea rows="4" cols="50" v-model="text" v-if="answeringQuestion" placeholder="Your Answer"/>\
-                            <input type="button" v-if="answeringQuestion" v-on:click="submitAnswer" value="Submit"/>\
-                            <input type="button" v-if="answeringQuestion" v-on:click="cancelAnswer" value="Cancel"/>\
+                            <span v-if="answeringQuestion">\
+                            <textarea rows="4" cols="50" v-model="text" placeholder="Your Answer"/>\
+                            <input type="button" v-on:click="submitAnswer" value="Submit"/>\
+                            <input type="button" v-on:click="cancelAnswer" value="Cancel"/>\
+                            <p v-if="text.length == 0" style="color: darkred">Text cannot be empty!</p>\
+                            </span>\
                         </ul>\
                     </span>\
                     ',
