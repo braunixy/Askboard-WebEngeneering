@@ -5,6 +5,7 @@ ReadMe für WebEngineering-Projekt SS 2017 vom Team "qwert"
 Teammitglieder:
 
   Fabian Moker (72628) - FrontEnd
+  
   Michael Braunsperger (74977) - BackEnd
 
 Um unser Projekt zu starten/testen gibt es zwei Möglichkeiten:
@@ -16,7 +17,7 @@ Um unser Projekt zu starten/testen gibt es zwei Möglichkeiten:
   a)
   Laden Sie die "my-server.jar" Datei herunter. 
   Führen Sie die Datei "my-server.jar" aus und öffnen Sie einen Browser (Wir verwendeten bei der Erstellung des Projekts 
-  ausschließlich Mozilla Firefox).
+  Mozilla Firefox und Internet Explorer).
   Gehen Sie nach erfolgreichen Starten des Servers auf die URL:
   
       http://localhost:8080/
@@ -62,7 +63,7 @@ Um unser Projekt zu starten/testen gibt es zwei Möglichkeiten:
 2.
   Laden Sie via Intellij oder Eclipse den Code herunter und führen Sie die Klasse "MyServerAskboardApplication.java" aus.
   Öfnnen Sie einen Browser(Wir verwendeten bei der Erstellung des Projekts 
-  ausschließlich Mozilla Firefox).
+  Mozilla Firefox und Internet Explorer).
   Gehen Sie nach erfolgreichen Starten des Servers auf die URL:
   
       http://localhost:8080/
@@ -72,7 +73,7 @@ Um unser Projekt zu starten/testen gibt es zwei Möglichkeiten:
   Um vorgenerierten Content zu haben gehen Sie in die Klasse "Seeder.java" und setzen sie in Zeiel 28 die Boolean Variable 
   "create" auf "true".
   Öffnen Sie einen Browser(Wir verwendeten bei der Erstellung des Projekts 
-  ausschließlich Mozilla Firefox).
+  Mozilla Firefox und Internet Explorer).
   Gehen Sie nach erfolgreichen Starten des Servers auf die URL:
   
       http://localhost:8080/
