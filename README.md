@@ -10,7 +10,7 @@ Teammitglieder:
 
 Um unser Projekt zu starten/testen gibt es zwei Möglichkeiten:
 
-  1.
+1.
    Hier gibt es ebenfalls zwei Startmöglichkeiten 
    a) ohne vorgenerierte Fragen und User und b) mit vorgenerierte Fragen und User
 
