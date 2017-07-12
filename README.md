@@ -60,7 +60,7 @@ Um unser Projekt zu starten/testen gibt es zwei Möglichkeiten:
   Username: admin
   Password: admin
   
-  2)
+  2)d
   Laden Sie via Intellij oder Eclipse den Code herunter und führen Sie die Klasse "MyServerAskboardApplication.java" aus.
   Öfnnen Sie einen Browser(Wir verwendeten bei der Erstellung des Projekts 
   Mozilla Firefox und Internet Explorer).
