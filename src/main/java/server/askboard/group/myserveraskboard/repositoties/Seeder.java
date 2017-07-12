@@ -50,13 +50,11 @@ public class Seeder implements CommandLineRunner {
                                                  + "space!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             
             questionService.save(olafQuestion);
-            userService.findByUsername(olafQuestion.getOwner()).getQuestions().add(olafQuestion);
             
             Question seppQuestion = new Question("Sepp123", "Second Post",
                                                  "Just wanted to create the " + "second post!");
             
             questionService.save(seppQuestion);
-            userService.findByUsername(seppQuestion.getOwner()).getQuestions().add(seppQuestion);
         }
     }
 }

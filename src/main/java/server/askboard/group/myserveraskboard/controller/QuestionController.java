@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import server.askboard.group.myserveraskboard.entities.Answer;
 import server.askboard.group.myserveraskboard.entities.Question;
 import server.askboard.group.myserveraskboard.services.QuestionService;
-import server.askboard.group.myserveraskboard.services.UserServiceImpl;
 
 import java.util.List;
 
@@ -15,8 +14,6 @@ public class QuestionController {
     
     @Autowired
     private QuestionService questionService;
-    @Autowired
-    private UserServiceImpl userService;
     
     @RequestMapping(value = "/", method = RequestMethod.GET)
     private String index() {

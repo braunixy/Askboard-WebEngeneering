@@ -425,20 +425,6 @@
                         app.question = res
                     });
                 },
-                checkUsernamebeforeLogin: function () {
-                    if (!this.username || !this.password) {
-                        alert('Empty Username or/and Passwords are invalid')
-                    } else {
-                        app.loginFunction();
-                    }
-                },
-                checkUsernamebeforeRegister: function () {
-                    if (!this.username || !this.password) {
-                        alert('Empty Username or/and Passwords are invalid')
-                    } else {
-                        app.registerFunction();
-                    }
-                },
                 loginFunction: function () {
                     $.ajax({
                         url: 'http://localhost:8080/login',

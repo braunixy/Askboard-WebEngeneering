@@ -74,7 +74,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     if (cookie == null || token != null
                                           && !token.equals(cookie.getValue())) {
                         
-                        // Token is being added to the XSRF-TOKEN cookie.
                         cookie = new Cookie("XSRF-TOKEN", token);
                         cookie.setPath("/");
                         cookie.setHttpOnly(false);

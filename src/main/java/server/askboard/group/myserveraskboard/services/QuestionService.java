@@ -36,7 +36,6 @@ public class QuestionService {
         question.setAnswered(false);
         question.setWithoutAnswers(true);
         questionRepository.save(question);
-        userRepository.findByUsername(username).getQuestions().add(question);
     }
     
     public Question findByID(Long id) {
@@ -50,11 +49,6 @@ public class QuestionService {
         if (! username.equals(deleteQuestion.getOwner())) {
             return "Only allowed for own Questions!";
         }
-        
-        for (Answer answer : deleteQuestion.getAnswers()) {
-            userRepository.findByUsername(answer.getOwner()).getAnswers().remove(answer);
-        }
-        userRepository.findByUsername(deleteQuestion.getOwner()).getQuestions().remove(deleteQuestion);
         questionRepository.delete(id);
         
         return "Question deleted!";
@@ -106,7 +100,6 @@ public class QuestionService {
         answer.setAccepted(false);
         
         questionRepository.save(question);
-        userRepository.findByUsername(username).getAnswers().add(answer);
         
         return question;
     }
