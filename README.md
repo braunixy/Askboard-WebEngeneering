@@ -39,7 +39,7 @@ Um unser Projekt zu starten/testen gibt es zwei Möglichkeiten:
   
   
   
-  Öfnnen Sie einen Browser(Wir verwendeten bei der Erstellung des Projekts 
+  Öffnen Sie einen Browser(Wir verwendeten bei der Erstellung des Projekts 
   Mozilla Firefox und Internet Explorer).
   Gehen Sie nach erfolgreichen Starten des Servers auf die URL:
   
@@ -62,7 +62,7 @@ Um unser Projekt zu starten/testen gibt es zwei Möglichkeiten:
   
   (2)
   Laden Sie via Intellij oder Eclipse den Code herunter und führen Sie die Klasse "MyServerAskboardApplication.java" aus.
-  Öfnnen Sie einen Browser(Wir verwendeten bei der Erstellung des Projekts 
+  Öffnen Sie einen Browser(Wir verwendeten bei der Erstellung des Projekts 
   Mozilla Firefox und Internet Explorer).
   Gehen Sie nach erfolgreichen Starten des Servers auf die URL:
   
